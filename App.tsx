@@ -63,7 +63,7 @@ export default function App() {
               ),
             })}
           >
-            <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Welcome" component={WelcomeScreen} />
             <Stack.Screen name="DesignForm" component={DesignFormScreen} />
             <Stack.Screen name="Results" component={ResultsScreen} />
             <Stack.Screen name="MyDesigns" component={MyDesignsScreen} />

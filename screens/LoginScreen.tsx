@@ -35,6 +35,7 @@ const LoginScreen = ({ navigation }) => {
         style={styles.input}
         keyboardType="email-address"
         autoCapitalize="none"
+        testID="email-input"
       />
       <TextInput
         label="Password"
@@ -43,6 +44,7 @@ const LoginScreen = ({ navigation }) => {
         mode="outlined"
         secureTextEntry
         style={styles.input}
+        testID="password-input"
       />
       <Button mode="contained" onPress={handleAuth} style={styles.button}>
         {isLogin ? 'Login' : 'Sign Up'}

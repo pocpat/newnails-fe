@@ -41,11 +41,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton, onTryAgainP
         anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}>
         <Menu.Item onPress={() => { navigation.navigate('MyDesigns'); closeMenu(); }} title="My Designs" />
         <Menu.Item onPress={() => { navigation.navigate('DesignForm', { clear: true }); closeMenu(); }} title="Start Over" />
-        {user ? (
-          <Menu.Item onPress={handleLogout} title="Logout" />
-        ) : (
-          <Menu.Item onPress={() => { navigation.navigate('Login'); closeMenu(); }} title="Login" />
-        )}
+        <Menu.Item onPress={handleLogout} title="Logout" />
       </Menu>
     </Appbar.Header>
   );

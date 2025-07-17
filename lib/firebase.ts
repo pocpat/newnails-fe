@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -22,4 +23,12 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-export { app, auth, db, storage };
+//export { app, auth, db, storage};
+
+// Custom hook to wrap useAuthState for easy mocking and usage
+const useAuth = () => {
+  const [user, loading, error] = useAuthState(auth);
+  return { user, loading, error };
+};
+
+export { app, auth, db, storage, useAuth };
