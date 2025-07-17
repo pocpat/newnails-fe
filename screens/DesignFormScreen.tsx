@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Modal, Text, ScrollView } from 'react-native';
 import { Button, ActivityIndicator } from 'react-native-paper';
 import SelectorRow from '../components/SelectorRow'; // Import the new component
@@ -10,7 +10,7 @@ const shapeOptions = ["Square", "Round", "Almond", "Squoval", "Pointed", "Baller
 const styleOptions = ["Classic French", "Floral", "Line Art", "Geometric", "Ombre", "Abstract", "Dot Nails", "Glitter"];
 const colorConfigOptions = ["Base Color Picker", "Monochromatic", "Analogous", "Complimentary", "Triad", "Tetradic"];
 
-const DesignFormScreen = ({ navigation }) => {
+const DesignFormScreen = ({ navigation, route }) => {
   // State for user's selections
   const [selectedLength, setSelectedLength] = useState(null);
   const [selectedShape, setSelectedShape] = useState(null);
@@ -20,6 +20,18 @@ const DesignFormScreen = ({ navigation }) => {
   // State to control the active part of the form
   const [activeSection, setActiveSection] = useState('length'); // Initial active section
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (route.params?.clear) {
+      setSelectedLength(null);
+      setSelectedShape(null);
+      setSelectedStyle(null);
+      setSelectedColorConfig(null);
+      setActiveSection('length');
+      // Reset the navigation params to avoid an infinite loop
+      navigation.setParams({ clear: false });
+    }
+  }, [route.params?.clear]);
 
   // Function to handle selection and advance the active section
   const handleSelect = (category, value) => {

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, Dimensions, Modal, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Button, Card, IconButton, ToggleButton } from 'react-native-paper';
-import * as api from '../lib/api'; // Assuming api.ts is in lib/
+import { useFocusEffect } from '@react-navigation/native';
+import * as api from '../lib/api';
 
 const { width } = Dimensions.get('window');
 const IMAGE_SIZE = (width - 40) / 2; // Two images per row with some padding
@@ -13,33 +14,29 @@ const MyDesignsScreen = ({ navigation }) => {
   const [fullScreenImage, setFullScreenImage] = useState(null);
   const [sortOrder, setSortOrder] = useState('recent'); // 'recent' or 'favorites'
 
-  const fetchMyDesigns = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      // Placeholder for actual API call
-      // const response = await api.getMyDesigns();
-      // setMyDesigns(response.designs);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchMyDesigns = async () => {
+        try {
+          setLoading(true);
+          setError(null);
+          const response = await api.getMyDesigns();
+          setMyDesigns(response.designs || []);
+        } catch (err) {
+          setError('Failed to fetch designs. Please try again.');
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-      // Mock data for now
-      const mockDesigns = [
-        { id: 'd1', url: 'https://via.placeholder.com/150/FF0000/FFFFFF?text=Saved1', isFavorite: false, createdAt: new Date('2025-07-15T10:00:00Z') },
-        { id: 'd2', url: 'https://via.placeholder.com/150/00FF00/FFFFFF?text=Saved2', isFavorite: true, createdAt: new Date('2025-07-14T10:00:00Z') },
-        { id: 'd3', url: 'https://via.placeholder.com/150/0000FF/FFFFFF?text=Saved3', isFavorite: false, createdAt: new Date('2025-07-13T10:00:00Z') },
-        { id: 'd4', url: 'https://via.placeholder.com/150/FFFF00/FFFFFF?text=Saved4', isFavorite: true, createdAt: new Date('2025-07-12T10:00:00Z') },
-      ];
-      setMyDesigns(mockDesigns);
-    } catch (err) {
-      setError('Failed to fetch designs. Please try again.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      fetchMyDesigns();
 
-  useEffect(() => {
-    fetchMyDesigns();
-  }, []);
+      return () => {
+        // Optional cleanup function
+      };
+    }, [])
+  );
 
   const sortedDesigns = [...myDesigns].sort((a, b) => {
     if (sortOrder === 'favorites') {
@@ -50,21 +47,40 @@ const MyDesignsScreen = ({ navigation }) => {
   });
 
   const handleToggleFavorite = async (designId) => {
-    // Implement toggle favorite logic here, call api.toggleFavorite
-    console.log("Toggling favorite for:", designId);
-    setMyDesigns(prevDesigns =>
-      prevDesigns.map(design =>
-        design.id === designId ? { ...design, isFavorite: !design.isFavorite } : design
-      )
-    );
+    try {
+      // Optimistically update the UI
+      setMyDesigns(prevDesigns =>
+        prevDesigns.map(design =>
+          design.id === designId ? { ...design, isFavorite: !design.isFavorite } : design
+        )
+      );
+      await api.toggleFavorite(designId);
+    } catch (error) {
+      console.error("Failed to toggle favorite:", error);
+      // Revert the UI change on error
+      setMyDesigns(prevDesigns =>
+        prevDesigns.map(design =>
+          design.id === designId ? { ...design, isFavorite: !design.isFavorite } : design
+        )
+      );
+      setError("Failed to update favorite status. Please try again.");
+    }
   };
 
   const handleDeleteDesign = async (designId) => {
-    // Implement delete logic here, call api.deleteDesign
-    console.log("Deleting design:", designId);
-    // Show confirmation modal first
-    if (confirm("Are you sure you want to delete this design?")) {
-      setMyDesigns(prevDesigns => prevDesigns.filter(design => design.id !== designId));
+    // Show a confirmation dialog before deleting
+    if (confirm("Are you sure you want to permanently delete this design?")) {
+      try {
+        // Optimistically remove from the UI
+        const originalDesigns = myDesigns;
+        setMyDesigns(prevDesigns => prevDesigns.filter(design => design.id !== designId));
+        await api.deleteDesign(designId);
+      } catch (error) {
+        console.error("Failed to delete design:", error);
+        // Revert the UI change on error
+        setMyDesigns(originalDesigns);
+        setError("Failed to delete design. Please try again.");
+      }
     }
   };
 

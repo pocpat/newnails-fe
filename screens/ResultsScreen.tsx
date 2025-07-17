@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, Dimensions, Modal, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Button, Card, IconButton } from 'react-native-paper';
 import * as api from '../lib/api';
+import MainHeader from '../components/MainHeader';
 
 const { width } = Dimensions.get('window');
 const IMAGE_SIZE = (width - 40) / 2; // Two images per row with some padding
@@ -22,6 +23,18 @@ const ResultsScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [fullScreenImage, setFullScreenImage] = useState(null);
+
+  const handleTryAgain = () => {
+    navigation.navigate('DesignForm', { clear: true });
+  };
+
+  useEffect(() => {
+    navigation.setOptions({
+      header: () => (
+        <MainHeader showTryAgainButton={true} onTryAgainPress={handleTryAgain} />
+      ),
+    });
+  }, [navigation]);
 
   useEffect(() => {
     const fetchDesigns = async () => {
@@ -65,14 +78,30 @@ const ResultsScreen = ({ route, navigation }) => {
     fetchDesigns();
   }, [length, shape, style, colorConfig]);
 
-  const handleSaveDesign = async (designId) => {
-    // Implement save logic here, call api.saveDesign
-    console.log("Saving design:", designId);
+  const handleSaveDesign = async (designToSave) => {
+    // Optimistically update the UI to show the design as saved
     setGeneratedDesigns(prevDesigns =>
       prevDesigns.map(design =>
-        design.id === designId ? { ...design, saved: true } : design
+        design.id === designToSave.id ? { ...design, saved: true } : design
       )
     );
+
+    try {
+      await api.saveDesign({
+        prompt: `A ${length} ${shape} nail with ${style} design and ${colorConfig} color scheme.`,
+        imageUrl: designToSave.url,
+        model: designToSave.id.split('-')[0], // Extract model from the ID
+      });
+    } catch (error) {
+      console.error("Failed to save design:", error);
+      // Revert the UI change on error
+      setGeneratedDesigns(prevDesigns =>
+        prevDesigns.map(design =>
+          design.id === designToSave.id ? { ...design, saved: false } : design
+        )
+      );
+      setError("Failed to save design. Please try again.");
+    }
   };
 
   const renderDesignItem = ({ item }) => (
@@ -84,7 +113,7 @@ const ResultsScreen = ({ route, navigation }) => {
         <IconButton
           icon={item.saved ? "check" : "content-save"}
           color={item.saved ? "green" : "gray"}
-          onPress={() => handleSaveDesign(item.id)}
+          onPress={() => handleSaveDesign(item)}
           disabled={item.saved}
         />
         <IconButton

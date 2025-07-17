@@ -2,6 +2,9 @@
 import React from 'react';
 import { Appbar, Menu, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../App';
+import { auth } from '../lib/firebase';
+import { signOut } from 'firebase/auth';
 
 interface MainHeaderProps {
   showTryAgainButton?: boolean;
@@ -13,6 +16,16 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton, onTryAgainP
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
   const navigation = useNavigation();
+  const { user } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      closeMenu();
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
 
   return (
     <Appbar.Header>
@@ -27,8 +40,12 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton, onTryAgainP
         onDismiss={closeMenu}
         anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}>
         <Menu.Item onPress={() => { navigation.navigate('MyDesigns'); closeMenu(); }} title="My Designs" />
-        <Menu.Item onPress={() => { navigation.navigate('DesignForm'); closeMenu(); }} title="Start Over" />
-        <Menu.Item onPress={() => { console.log('Logout'); closeMenu(); }} title="Logout" />
+        <Menu.Item onPress={() => { navigation.navigate('DesignForm', { clear: true }); closeMenu(); }} title="Start Over" />
+        {user ? (
+          <Menu.Item onPress={handleLogout} title="Logout" />
+        ) : (
+          <Menu.Item onPress={() => { navigation.navigate('Login'); closeMenu(); }} title="Login" />
+        )}
       </Menu>
     </Appbar.Header>
   );

@@ -2,15 +2,18 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
+import { useAuth } from '../App'; // Import useAuth hook
 
 const WelcomeScreen = ({ navigation }) => {
-  // Since we are not using Clerk, we will just have the button enabled by default
+  const { user } = useAuth(); // Get user from AuthContext
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tipsy</Text>
       <Button
         mode="contained"
         onPress={() => navigation.navigate('DesignForm')}
+        disabled={!user} // Disable if no user is logged in
       >
         Press to start
       </Button>
