@@ -89,8 +89,7 @@ const ResultsScreen = ({ route, navigation }) => {
     try {
       await api.saveDesign({
         prompt: `A ${length} ${shape} nail with ${style} design and ${colorConfig} color scheme.`,
-        imageUrl: designToSave.url,
-        model: designToSave.id.split('-')[0], // Extract model from the ID
+        temporaryImageUrl: designToSave.url,
       });
     } catch (error) {
       console.error("Failed to save design:", error);

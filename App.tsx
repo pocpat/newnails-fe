@@ -10,7 +10,7 @@ import MyDesignsScreen from './screens/MyDesignsScreen';
 import LoginScreen from './screens/LoginScreen'; // Import LoginScreen
 import MainHeader from './components/MainHeader';
 import Footer from './components/Footer';
-import { auth } from './lib/firebase';
+import { auth } from './lib/firebase'; // Import auth from firebase.ts
 import { onAuthStateChanged, User } from 'firebase/auth';
 
 const Stack = createNativeStackNavigator();
@@ -53,17 +53,17 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator 
             initialRouteName="Welcome"
-            screenOptions={({ route }) => ({
+            screenOptions={({ route, navigation }) => ({
               header: (props) => (
                 <MainHeader
                   {...props}
                   showTryAgainButton={route.name === 'Results'}
-                  onTryAgainPress={() => props.navigation.navigate('DesignForm')}
+                  onTryAgainPress={() => navigation.navigate('DesignForm')}
                 />
               ),
             })}
           >
-            <Stack.Screen name="Welcome" component={WelcomeScreen} />
+            <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
             <Stack.Screen name="DesignForm" component={DesignFormScreen} />
             <Stack.Screen name="Results" component={ResultsScreen} />
             <Stack.Screen name="MyDesigns" component={MyDesignsScreen} />

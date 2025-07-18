@@ -10,13 +10,21 @@ const WelcomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tipsy</Text>
-      <Button
-        mode="contained"
-        onPress={() => navigation.navigate('DesignForm')}
-        disabled={!user} // Disable if no user is logged in
-      >
-        Press to start
-      </Button>
+      {user ? (
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate('DesignForm')}
+        >
+          Press to start
+        </Button>
+      ) : (
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate('Login')}
+        >
+          Login / Sign Up
+        </Button>
+      )}
     </View>
   );
 };

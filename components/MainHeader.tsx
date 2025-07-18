@@ -22,6 +22,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton, onTryAgainP
     try {
       await signOut(auth);
       closeMenu();
+      navigation.navigate('Welcome'); // Navigate to Welcome after logout
     } catch (error) {
       console.error("Error signing out: ", error);
     }
@@ -39,9 +40,15 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton, onTryAgainP
         visible={visible}
         onDismiss={closeMenu}
         anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}>
-        <Menu.Item onPress={() => { navigation.navigate('MyDesigns'); closeMenu(); }} title="My Designs" />
-        <Menu.Item onPress={() => { navigation.navigate('DesignForm', { clear: true }); closeMenu(); }} title="Start Over" />
-        <Menu.Item onPress={handleLogout} title="Logout" />
+        {user ? (
+          <>
+            <Menu.Item onPress={() => { navigation.navigate('MyDesigns'); closeMenu(); }} title="My Designs" />
+            <Menu.Item onPress={() => { navigation.navigate('DesignForm', { clear: true }); closeMenu(); }} title="Start Over" />
+            <Menu.Item onPress={handleLogout} title="Logout" />
+          </>
+        ) : (
+          <Menu.Item onPress={() => { navigation.navigate('Login'); closeMenu(); }} title="Login" />
+        )}
       </Menu>
     </Appbar.Header>
   );

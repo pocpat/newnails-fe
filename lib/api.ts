@@ -1,8 +1,18 @@
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://localhost:3000'; // Default to localhost for development
 
+import { auth } from './firebase';
+
+
 async function fetchWithAuth(url: string, options?: RequestInit) {
+  const user = auth.currentUser;
+  let token = null;
+  if (user) {
+    token = await user.getIdToken();
+  }
+
   const headers = {
     'Content-Type': 'application/json',
+    ...(token && { 'Authorization': `Bearer ${token}` }),
     ...options?.headers,
   };
 
@@ -30,11 +40,8 @@ export async function generateDesigns(designOptions: {
 }
 
 export async function saveDesign(designData: {
-  tempUrl: string;
-  length: string;
-  shape: string;
-  style: string;
-  colorConfig: string;
+  prompt: string;
+  temporaryImageUrl: string;
 }) {
   return fetchWithAuth('/api/save-design', {
     method: 'POST',
