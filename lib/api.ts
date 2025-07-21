@@ -8,6 +8,10 @@ async function fetchWithAuth(url: string, options?: RequestInit) {
   let token = null;
   if (user) {
     token = await user.getIdToken();
+    console.log('Firebase User UID:', user.uid); // Log the user ID
+    console.log('Firebase Token Status:', token ? 'Token successfully retrieved' : 'Token is null'); // Log if token is present
+  } else {
+    console.log('No Firebase user found (auth.currentUser is null).'); // Log if no user is found
   }
 
   const headers = {
