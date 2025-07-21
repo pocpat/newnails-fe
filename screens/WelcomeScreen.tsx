@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
-import { useAuth } from '../App'; // Import useAuth hook
+import { useAuth } from '../lib/auth'; // Import useAuth hook
 
 const WelcomeScreen = ({ navigation }) => {
   const { user } = useAuth(); // Get user from AuthContext

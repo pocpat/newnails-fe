@@ -2,7 +2,7 @@
 import React from 'react';
 import { Appbar, Menu, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../App';
+import { useAuth } from '../lib/auth';
 import { auth } from '../lib/firebase';
 import { signOut } from 'firebase/auth';
 
