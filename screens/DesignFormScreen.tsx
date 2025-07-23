@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Modal, Text, ScrollView } from 'react-native';
 import { Button, ActivityIndicator } from 'react-native-paper';
 import SelectorRow from '../components/SelectorRow'; // Import the new component
+import { generateDesigns } from '../lib/api';
 
 // Data arrays for selection categories
 const lengthOptions = ["Short", "Medium", "Long"];
@@ -60,18 +61,34 @@ const DesignFormScreen = ({ navigation, route }) => {
   // Check if all options are selected to enable the "Impress Me" button
   const allOptionsSelected = selectedLength && selectedShape && selectedStyle && selectedColorConfig;
 
-  const handleImpressMe = () => {
+  const handleImpressMe = async () => {
     setLoading(true);
-    // Simulate API call or processing time
-    setTimeout(() => {
+    try {
+      // Construct the prompt for the AI model
+      const prompt = `A nail design with ${selectedLength} length, ${selectedShape} shape, ${selectedStyle} style, and ${selectedColorConfig} color configuration.`;
+
+      // Call the generateDesigns API
+      const generatedImages = await generateDesigns({
+        prompt: prompt,
+        model: "stabilityai/sdxl-turbo:free", // Using a default model for now
+        // You can add width, height, num_images if needed
+      });
+
       setLoading(false);
       navigation.navigate('Results', {
+        generatedImages: generatedImages, // Pass the actual generated images
+        // You might still want to pass the design options for display on the results screen
         length: selectedLength,
         shape: selectedShape,
         style: selectedStyle,
         colorConfig: selectedColorConfig,
       });
-    }, 1500); // Simulate a short delay
+    } catch (error) {
+      setLoading(false);
+      console.error("Error generating designs:", error);
+      // Optionally, show an alert to the user
+      alert("Failed to generate designs. Please try again.");
+    }
   };
 
   return (
