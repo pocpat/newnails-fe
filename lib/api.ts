@@ -6,8 +6,9 @@ import { auth } from './firebase';
 async function fetchWithAuth(url: string, options?: RequestInit) {
   const user = auth.currentUser;
   let token = null;
+  console.log('fetchWithAuth: auth.currentUser:', auth.currentUser);
   if (user) {
-    token = await user.getIdToken();
+    token = await user.getIdToken(true); // Force a token refresh
     //console.log('Firebase User UID:', user.uid); // Log the user ID
     console.log('Firebase Token Status:', token ? 'Token successfully retrieved' : 'Token is null'); // Log if token is present
   } else {
@@ -20,6 +21,7 @@ async function fetchWithAuth(url: string, options?: RequestInit) {
     ...options?.headers,
   };
 
+  console.log('fetchWithAuth: Headers being sent:', headers);
   const response = await fetch(`${API_BASE_URL}${url}`, { ...options, headers });
 
   if (!response.ok) {
@@ -31,7 +33,10 @@ async function fetchWithAuth(url: string, options?: RequestInit) {
 }
 
 export async function generateDesigns(designOptions: {
-  prompt: string;
+  length: string;
+  shape: string;
+  style: string;
+  colorConfig: string;
   model: string;
   width?: number;
   height?: number;

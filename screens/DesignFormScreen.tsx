@@ -65,11 +65,12 @@ const DesignFormScreen = ({ navigation, route }) => {
     setLoading(true);
     try {
       // Construct the prompt for the AI model
-      const prompt = `A nail design with ${selectedLength} length, ${selectedShape} shape, ${selectedStyle} style, and ${selectedColorConfig} color configuration.`;
-
       // Call the generateDesigns API
       const generatedImages = await generateDesigns({
-        prompt: prompt,
+        length: selectedLength,
+        shape: selectedShape,
+        style: selectedStyle,
+        colorConfig: selectedColorConfig,
         model: "stabilityai/sdxl-turbo:free", // Using a default model for now
         // You can add width, height, num_images if needed
       });
