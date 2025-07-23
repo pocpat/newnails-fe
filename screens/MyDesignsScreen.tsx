@@ -21,7 +21,8 @@ const MyDesignsScreen = ({ navigation }) => {
           setLoading(true);
           setError(null);
           const response = await api.getMyDesigns();
-          setMyDesigns(response.designs || []);
+          console.log('MyDesignsScreen: API Response:', response);
+          setMyDesigns(response || []);
         } catch (err) {
           setError('Failed to fetch designs. Please try again.');
           console.error(err);
@@ -51,7 +52,7 @@ const MyDesignsScreen = ({ navigation }) => {
       // Optimistically update the UI
       setMyDesigns(prevDesigns =>
         prevDesigns.map(design =>
-          design.id === designId ? { ...design, isFavorite: !design.isFavorite } : design
+          design._id === designId ? { ...design, isFavorite: !design.isFavorite } : design
         )
       );
       await api.toggleFavorite(designId);
@@ -60,7 +61,7 @@ const MyDesignsScreen = ({ navigation }) => {
       // Revert the UI change on error
       setMyDesigns(prevDesigns =>
         prevDesigns.map(design =>
-          design.id === designId ? { ...design, isFavorite: !design.isFavorite } : design
+          design._id === designId ? { ...design, isFavorite: !design.isFavorite } : design
         )
       );
       setError("Failed to update favorite status. Please try again.");
@@ -73,7 +74,7 @@ const MyDesignsScreen = ({ navigation }) => {
       try {
         // Optimistically remove from the UI
         const originalDesigns = myDesigns;
-        setMyDesigns(prevDesigns => prevDesigns.filter(design => design.id !== designId));
+        setMyDesigns(prevDesigns => prevDesigns.filter(design => design._id !== designId));
         await api.deleteDesign(designId);
       } catch (error) {
         console.error("Failed to delete design:", error);
@@ -86,19 +87,19 @@ const MyDesignsScreen = ({ navigation }) => {
 
   const renderDesignItem = ({ item }) => (
     <Card style={styles.designCard}>
-      <TouchableOpacity onPress={() => setFullScreenImage(item.url)}>
-        <Image source={{ uri: item.url }} style={styles.designImage} />
+      <TouchableOpacity onPress={() => setFullScreenImage(item.imageUrl)}>
+        <Image source={{ uri: item.imageUrl }} style={styles.designImage} />
       </TouchableOpacity>
       <Card.Actions style={styles.cardActions}>
         <IconButton
           icon={item.isFavorite ? "star" : "star-outline"}
           color={item.isFavorite ? "gold" : "gray"}
-          onPress={() => handleToggleFavorite(item.id)}
+          onPress={() => handleToggleFavorite(item._id)}
         />
         <IconButton
           icon="delete"
           color="red"
-          onPress={() => handleDeleteDesign(item.id)}
+          onPress={() => handleDeleteDesign(item._id)}
         />
       </Card.Actions>
     </Card>
@@ -138,7 +139,7 @@ const MyDesignsScreen = ({ navigation }) => {
       <FlatList
         data={sortedDesigns}
         renderItem={renderDesignItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         numColumns={2}
         contentContainerStyle={styles.flatListContent}
       />
