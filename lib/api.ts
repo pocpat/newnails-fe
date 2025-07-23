@@ -33,10 +33,7 @@ async function fetchWithAuth(url: string, options?: RequestInit) {
 }
 
 export async function generateDesigns(designOptions: {
-  length: string;
-  shape: string;
-  style: string;
-  colorConfig: string;
+  prompt: string;
   model: string;
   width?: number;
   height?: number;
