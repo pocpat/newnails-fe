@@ -21,7 +21,14 @@ const MyDesignsScreen = ({ navigation }) => {
           setLoading(true);
           setError(null);
           const response = await api.getMyDesigns();
-          setMyDesigns(response.designs || []);
+          console.log('Raw API response for my designs:', response);
+          // Map _id to id and imageUrl to url for frontend consistency
+          const formattedDesigns = response.map(design => ({
+            ...design,
+            id: design._id,
+            url: design.imageUrl,
+          }));
+          setMyDesigns(formattedDesigns || []);
         } catch (err) {
           setError('Failed to fetch designs. Please try again.');
           console.error(err);
