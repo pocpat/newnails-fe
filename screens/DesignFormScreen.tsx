@@ -65,7 +65,7 @@ const DesignFormScreen = ({ navigation, route }) => {
     setLoading(true);
     try {
       // Construct the prompt for the AI model
-      const prompt = `Adetailed closup Nail design with ${selectedLength} length, ${selectedShape} shape, ${selectedStyle} style, and ${selectedColorConfig} color configuration.`;
+      const prompt = `A detailed close up Nail design with ${selectedLength} length, ${selectedShape} shape, ${selectedStyle} style, and ${selectedColorConfig} color configuration.`;
 
       // Call the generateDesigns API
       const generatedImages = await generateDesigns({

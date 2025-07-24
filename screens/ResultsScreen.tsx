@@ -23,15 +23,16 @@ const ResultsScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [fullScreenImage, setFullScreenImage] = useState(null);
+  const [hasFetched, setHasFetched] = useState(false);
 
   const handleTryAgain = () => {
-    navigation.navigate('DesignForm', { clear: true });
+    setHasFetched(false); // Reset fetch status
   };
 
   useEffect(() => {
     navigation.setOptions({
       header: () => (
-        <MainHeader showTryAgainButton={true} onTryAgainPress={handleTryAgain} />
+        <MainHeader />
       ),
     });
   }, [navigation]);
@@ -72,11 +73,14 @@ const ResultsScreen = ({ route, navigation }) => {
         console.error('Error generating designs:', err);
       } finally {
         setLoading(false);
+        setHasFetched(true); // Mark as fetched
       }
     };
 
-    fetchDesigns();
-  }, [length, shape, style, colorConfig]);
+    if (!hasFetched) {
+      fetchDesigns();
+    }
+  }, [length, shape, style, colorConfig, hasFetched]);
 
   const handleSaveDesign = async (designToSave) => {
     // Optimistically update the UI to show the design as saved
@@ -137,7 +141,9 @@ const ResultsScreen = ({ route, navigation }) => {
     return (
       <View style={styles.centeredContainer}>
         <Text style={styles.errorText}>{error}</Text>
-        <Button mode="contained" onPress={() => navigation.goBack()}>Go Back</Button>
+        <Button mode="contained" onPress={handleTryAgain}>
+          Try Again
+        </Button>
       </View>
     );
   }
