@@ -6,7 +6,7 @@ import { RootStackParamList } from '../App';
 import { useAuth } from '../lib/auth';
 import { auth } from '../lib/firebase';
 import { signOut } from 'firebase/auth';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 interface MainHeaderProps {
   showTryAgainButton?: boolean;
@@ -32,11 +32,13 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton, onTryAgainP
 
   return (
     <Appbar.Header style={styles.header}>
-      <Appbar.Content title="Tipsy" titleStyle={styles.title} />
+      <Appbar.Action icon="menu" color="#E0BBE4" onPress={openMenu} />
       {showTryAgainButton && (
-        <Button mode="text" onPress={onTryAgainPress} labelStyle={styles.buttonLabel}>
-          Start Over
-        </Button>
+        <View style={styles.centerButtonContainer}>
+          <Button mode="contained" onPress={onTryAgainPress} labelStyle={styles.buttonLabel} style={styles.tryAgainButton}>
+            Start Over
+          </Button>
+        </View>
       )}
       <Menu
         visible={visible}
@@ -74,6 +76,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)', // Semi-transparent black
     elevation: 0,
     shadowOpacity: 0,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  centerButtonContainer: {
+    flex: 1,
+    alignItems: 'center',
   },
   title: {
     color: '#E0BBE4',
@@ -81,8 +89,15 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   buttonLabel: {
-    color: '#E0BBE4',
+    color: '#4B0082',
     fontFamily: 'Inter-Bold',
+    fontSize: 12, // Smaller font size for the button label
+  },
+  tryAgainButton: {
+    backgroundColor: '#E0BBE4',
+    borderRadius: 20,
+    paddingHorizontal: 10, // Reduced horizontal padding
+    paddingVertical: 3, // Reduced vertical padding
   },
   menuItem: {
     fontFamily: 'Inter-Variable',
