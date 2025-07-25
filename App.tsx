@@ -1,5 +1,4 @@
-
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider as PaperProvider } from 'react-native-paper';
@@ -10,32 +9,28 @@ import MyDesignsScreen from './screens/MyDesignsScreen';
 import LoginScreen from './screens/LoginScreen';
 import MainHeader from './components/MainHeader';
 import Footer from './components/Footer';
-import { AuthProvider, useAuth } from './lib/auth'; // Import from the new auth file
+import { AuthProvider, useAuth } from './lib/auth';
+import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 
-const Stack = createNativeStackNavigator();
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
+
+export type RootStackParamList = {
+  Welcome: undefined;
+  DesignForm: { clear?: boolean };
+  Results: { length: string; shape: string; style: string; colorConfig: string };
+  MyDesigns: undefined;
+  Login: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function AppNavigator() {
   const { user, loading } = useAuth();
 
-  useEffect(() => {
-    async function loadFonts() {
-      try {
-        await Font.loadAsync({
-          'PottaOne-Regular': require('./assets/fonts/PottaOne-Regular.ttf'),
-          'Inter-Variable': require('./assets/fonts/Inter-VariableFont_opsz,wght.ttf'),
-          'Inter-Bold': require('./assets/fonts/Inter_18pt-Bold.ttf'),
-        });
-      } catch (e) {
-        console.warn(e);
-      }
-    }
-    loadFonts();
-  }, []);
-
   if (loading) {
-    // You might want to render a loading spinner or splash screen here
-    return null;
+    return null; // Auth loading is handled by the main App component
   }
 
   return (
@@ -64,6 +59,38 @@ function AppNavigator() {
 }
 
 export default function App() {
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        // Pre-load fonts
+        await Font.loadAsync({
+          'PottaOne-Regular': require('./assets/fonts/PottaOne-Regular.ttf'),
+          'Inter-Variable': require('./assets/fonts/Inter-VariableFont_opsz,wght.ttf'),
+          'Inter-Bold': require('./assets/fonts/Inter_18pt-Bold.ttf'),
+        });
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        // Tell the application to render
+        setAppIsReady(true);
+      }
+    }
+
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
+  }
+
   return (
     <PaperProvider>
       <AuthProvider>

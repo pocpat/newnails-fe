@@ -1,75 +1,77 @@
-
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Button } from 'react-native-paper';
+import { View, Text, StyleSheet, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
 
 interface SelectorRowProps {
   title: string;
   options: string[];
   onSelect: (value: string) => void;
   selectedValue: string | null;
-  isActive: boolean;
-  onPress?: () => void; // Optional for making inactive rows tappable
+  style?: StyleProp<ViewStyle>;
 }
 
-const SelectorRow: React.FC<SelectorRowProps> = ({
-  title,
-  options,
-  onSelect,
-  selectedValue,
-  isActive,
-  onPress,
-}) => {
+const SelectorRow: React.FC<SelectorRowProps> = ({ title, options, onSelect, selectedValue, style }) => {
   return (
-    <TouchableOpacity
-      style={[styles.rowContainer, !isActive && styles.inactiveRow]}
-      onPress={onPress}
-      disabled={isActive} // Disable touch feedback if already active
-    >
-      <Text style={styles.rowTitle}>{title}</Text>
-      <View style={styles.buttonsContainer}>
+    <View style={[styles.container, style]}>
+      <Text style={styles.title}>{title}</Text>
+      <View style={styles.optionsContainer}>
         {options.map((option) => (
-          <Button
+          <TouchableOpacity
             key={option}
-            mode={selectedValue === option ? 'contained' : 'outlined'}
+            style={[
+              styles.option,
+              selectedValue === option && styles.selectedOption,
+            ]}
             onPress={() => onSelect(option)}
-            style={styles.button}
-            labelStyle={styles.buttonLabel}
-            disabled={!isActive} // Disable buttons if the row is not active
           >
-            {option}
-          </Button>
+            <Text
+              style={[
+                styles.optionText,
+                selectedValue === option && styles.selectedOptionText,
+              ]}
+            >
+              {option}
+            </Text>
+          </TouchableOpacity>
         ))}
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  rowContainer: {
-    marginBottom: 20,
-    padding: 10,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
+  container: {
+    marginBottom: 25,
   },
-  inactiveRow: {
-    opacity: 0.5,
-  },
-  rowTitle: {
+  title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'Inter-Bold',
+    color: '#FFFFFF',
     marginBottom: 10,
   },
-  buttonsContainer: {
+  optionsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
   },
-  button: {
+  option: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 20,
     margin: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
-  buttonLabel: {
-    fontSize: 14,
+  selectedOption: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FFFFFF',
+  },
+  optionText: {
+    color: '#FFFFFF',
+    fontFamily: 'Inter-Variable',
+  },
+  selectedOptionText: {
+    color: '#4B0082',
+    fontFamily: 'Inter-Bold',
   },
 });
 
