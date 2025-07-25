@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, StyleProp, ViewStyle, LayoutChangeEvent } from 'react-native';
 
 interface SelectorRowProps {
   title: string;
@@ -7,11 +7,12 @@ interface SelectorRowProps {
   onSelect: (value: string) => void;
   selectedValue: string | null;
   style?: StyleProp<ViewStyle>;
+  onLayout?: (event: LayoutChangeEvent) => void;
 }
 
-const SelectorRow: React.FC<SelectorRowProps> = ({ title, options, onSelect, selectedValue, style }) => {
+const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, onSelect, selectedValue, style, onLayout }, ref) => {
   return (
-    <View style={[styles.container, style]}>
+    <View ref={ref} style={[styles.container, style]} onLayout={onLayout}>
       <Text style={styles.title}>{title}</Text>
       <View style={styles.optionsContainer}>
         {options.map((option) => (
@@ -36,7 +37,7 @@ const SelectorRow: React.FC<SelectorRowProps> = ({ title, options, onSelect, sel
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

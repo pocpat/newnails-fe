@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Text, ScrollView, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import SelectorRow from '../components/SelectorRow';
@@ -15,6 +15,18 @@ const DesignFormScreen = ({ navigation, route }) => {
   const [selectedStyle, setSelectedStyle] = useState(null);
   const [selectedColorConfig, setSelectedColorConfig] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [activeSection, setActiveSection] = useState('length');
+
+  const scrollViewRef = useRef(null);
+
+  // Define approximate Y offsets for each section
+  const sectionOffsets = useRef({
+    length: 0,
+    shape: 200, // Approximate offset for shape section
+    style: 400, // Approximate offset for style section
+    color: 600, // Approximate offset for color section
+    done: 800, // Approximate offset for the end of the form
+  });
 
   useEffect(() => {
     if (route.params?.clear) {
@@ -22,11 +34,27 @@ const DesignFormScreen = ({ navigation, route }) => {
       setSelectedShape(null);
       setSelectedStyle(null);
       setSelectedColorConfig(null);
+      setActiveSection('length');
+      if (scrollViewRef.current) {
+        scrollViewRef.current.scrollTo({ y: 0, animated: false });
+      }
       navigation.setParams({ clear: false });
     }
   }, [route.params?.clear]);
 
   const allOptionsSelected = selectedLength && selectedShape && selectedStyle && selectedColorConfig;
+
+  const handleSelect = (setter, value, nextSection) => {
+    setter(value);
+    setActiveSection(nextSection);
+
+    if (scrollViewRef.current) {
+      const targetOffset = sectionOffsets.current[nextSection];
+      if (typeof targetOffset === 'number') {
+        scrollViewRef.current.scrollTo({ y: targetOffset, animated: true });
+      }
+    }
+  };
 
   const handleImpressMe = async () => {
     setLoading(true);
@@ -51,13 +79,13 @@ const DesignFormScreen = ({ navigation, route }) => {
         colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']}
         style={styles.overlay}
       >
-        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <ScrollView ref={scrollViewRef} contentContainerStyle={styles.scrollViewContainer}>
           <Text style={styles.title}>Create Your Masterpiece</Text>
 
-          <SelectorRow title="Nail Length" options={lengthOptions} onSelect={setSelectedLength} selectedValue={selectedLength} />
-          <SelectorRow title="Nail Shape" options={shapeOptions} onSelect={setSelectedShape} selectedValue={selectedShape} />
-          <SelectorRow title="Nail Style" options={styleOptions} onSelect={setSelectedStyle} selectedValue={selectedStyle} />
-          <SelectorRow title="Color Palette" options={colorConfigOptions} onSelect={setSelectedColorConfig} selectedValue={selectedColorConfig} />
+          <SelectorRow title="Nail Length" options={lengthOptions} onSelect={(value) => handleSelect(setSelectedLength, value, 'shape')} selectedValue={selectedLength} style={activeSection === 'length' ? styles.activeSection : styles.inactiveSection} />
+          <SelectorRow title="Nail Shape" options={shapeOptions} onSelect={(value) => handleSelect(setSelectedShape, value, 'style')} selectedValue={selectedShape} style={activeSection === 'shape' ? styles.activeSection : styles.inactiveSection} />
+          <SelectorRow title="Nail Style" options={styleOptions} onSelect={(value) => handleSelect(setSelectedStyle, value, 'color')} selectedValue={selectedStyle} style={activeSection === 'style' ? styles.activeSection : styles.inactiveSection} />
+          <SelectorRow title="Color Palette" options={colorConfigOptions} onSelect={(value) => handleSelect(setSelectedColorConfig, value, 'done')} selectedValue={selectedColorConfig} style={activeSection === 'color' ? styles.activeSection : styles.inactiveSection} />
 
           {allOptionsSelected && (
             <TouchableOpacity style={styles.impressMeButton} onPress={handleImpressMe} disabled={loading}>
@@ -83,6 +111,14 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     textAlign: 'center',
     marginBottom: 30,
+  },
+  activeSection: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  inactiveSection: {
+    opacity: 0.5,
   },
   impressMeButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
