@@ -120,34 +120,6 @@ const MyDesignsScreen = ({ navigation }) => {
     </Card>
   );
 
-  if (loading) {
-    return (
-        <ImageBackground source={require('../assets/images/bg1.png')} style={styles.background}>
-            <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']} style={styles.overlay}>
-                <View style={styles.centeredContainer}>
-                    <ActivityIndicator size="large" color="#FFFFFF" />
-                    <Text style={styles.loadingText}>Loading your designs...</Text>
-                </View>
-            </LinearGradient>
-        </ImageBackground>
-    );
-  }
-
-  if (error) {
-    return (
-        <ImageBackground source={require('../assets/images/bg1.png')} style={styles.background}>
-            <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']} style={styles.overlay}>
-                <View style={styles.centeredContainer}>
-                    <Text style={styles.errorText}>{error}</Text>
-                    <TouchableOpacity style={styles.button} onPress={fetchMyDesigns}>
-                        <Text style={styles.buttonText}>Retry</Text>
-                    </TouchableOpacity>
-                </View>
-            </LinearGradient>
-        </ImageBackground>
-    );
-  }
-
   return (
     <ImageBackground source={require('../assets/images/bg1.png')} style={styles.background}>
       <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']} style={styles.overlay}>

@@ -46,7 +46,15 @@ function AppNavigator() {
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="DesignForm" component={DesignFormScreen} />
         <Stack.Screen name="Results" component={ResultsScreen} />
-        <Stack.Screen name="MyDesigns" component={MyDesignsScreen} />
+        <Stack.Screen name="MyDesigns" component={MyDesignsScreen} options={({ navigation }) => ({
+          header: (props) => (
+            <MainHeader
+              {...props}
+              showTryAgainButton={true}
+              onTryAgainPress={() => navigation.navigate('DesignForm', { clear: true })}
+            />
+          ),
+        })} />
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
       <Footer />

@@ -33,12 +33,14 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton, onTryAgainP
   return (
     <Appbar.Header style={styles.header}>
       <Appbar.Action icon="menu" color="#E0BBE4" onPress={openMenu} />
-      {showTryAgainButton && (
+      {showTryAgainButton ? (
         <View style={styles.centerButtonContainer}>
           <Button mode="contained" onPress={onTryAgainPress} labelStyle={styles.buttonLabel} style={styles.tryAgainButton}>
             Start Over
           </Button>
         </View>
+      ) : (
+        <Appbar.Content title="Tipsy" titleStyle={styles.title} />
       )}
       <Menu
         visible={visible}
