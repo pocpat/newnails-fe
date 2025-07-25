@@ -12,7 +12,7 @@ import {
   ImageBackground,
   Alert,
 } from 'react-native';
-import { Card, IconButton } from 'react-native-paper';
+import { Card, IconButton, ToggleButton } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as api from '../lib/api';
@@ -126,12 +126,14 @@ const MyDesignsScreen = ({ navigation }) => {
         <View style={styles.container}>
           <Text style={styles.title}>My Saved Designs</Text>
           <View style={styles.sortContainer}>
-            <TouchableOpacity onPress={() => setSortOrder('recent')} style={[styles.sortButton, sortOrder === 'recent' && styles.sortButtonActive]}>
-                <Text style={[styles.sortButtonText, sortOrder === 'recent' && styles.sortButtonTextActive]}>Most Recent</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setSortOrder('favorites')} style={[styles.sortButton, sortOrder === 'favorites' && styles.sortButtonActive]}>
-                <Text style={[styles.sortButtonText, sortOrder === 'favorites' && styles.sortButtonTextActive]}>Favorites</Text>
-            </TouchableOpacity>
+            <Text style={styles.sortLabel}>Sort by:</Text>
+            <ToggleButton.Group
+              onValueChange={value => setSortOrder(value)}
+              value={sortOrder}
+            >
+              <ToggleButton icon="clock-outline" value="recent" />
+              <ToggleButton icon="star" value="favorites" />
+            </ToggleButton.Group>
           </View>
           {sortedDesigns.length > 0 ? (
             <FlatList
@@ -170,6 +172,7 @@ const styles = StyleSheet.create({
     errorText: { fontSize: 18, fontFamily: 'Inter-Variable', color: '#FF6B6B', textAlign: 'center', marginBottom: 20 },
     emptyText: { fontSize: 18, fontFamily: 'Inter-Variable', color: '#FFFFFF', textAlign: 'center' },
     sortContainer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 15 },
+    sortLabel: { fontSize: 16, marginRight: 10, color: '#E0BBE4' },
     sortButton: { paddingVertical: 8, paddingHorizontal: 15, borderRadius: 20, marginHorizontal: 5, backgroundColor: 'rgba(255, 255, 255, 0.2)' },
     sortButtonActive: { backgroundColor: '#FFFFFF' },
     sortButtonText: { color: '#FFFFFF', fontFamily: 'Inter-Bold' },
