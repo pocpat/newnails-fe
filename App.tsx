@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider as PaperProvider } from 'react-native-paper';
@@ -11,11 +11,27 @@ import LoginScreen from './screens/LoginScreen';
 import MainHeader from './components/MainHeader';
 import Footer from './components/Footer';
 import { AuthProvider, useAuth } from './lib/auth'; // Import from the new auth file
+import * as Font from 'expo-font';
 
 const Stack = createNativeStackNavigator();
 
 function AppNavigator() {
   const { user, loading } = useAuth();
+
+  useEffect(() => {
+    async function loadFonts() {
+      try {
+        await Font.loadAsync({
+          'PottaOne-Regular': require('./assets/fonts/PottaOne-Regular.ttf'),
+          'Inter-Variable': require('./assets/fonts/Inter-VariableFont_opsz,wght.ttf'),
+          'Inter-Bold': require('./assets/fonts/Inter_18pt-Bold.ttf'),
+        });
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+    loadFonts();
+  }, []);
 
   if (loading) {
     // You might want to render a loading spinner or splash screen here

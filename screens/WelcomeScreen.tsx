@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
@@ -9,11 +8,13 @@ const WelcomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tipsy</Text>
+      <Text style={styles.title}>TiPSY</Text>
+      <Text style={styles.subtitle}>Your AI assistant</Text>
       {user ? (
         <Button
           mode="contained"
           onPress={() => navigation.navigate('DesignForm')}
+          labelStyle={{ fontFamily: 'Inter-Bold' }}
         >
           Press to start
         </Button>
@@ -21,6 +22,7 @@ const WelcomeScreen = ({ navigation }) => {
         <Button
           mode="contained"
           onPress={() => navigation.navigate('Login')}
+          labelStyle={{ fontFamily: 'Inter-Bold' }}
         >
           Login / Sign Up
         </Button>
@@ -38,6 +40,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 48,
     marginBottom: 40,
+    fontFamily: 'PottaOne-Regular',
+  },
+  subtitle: {
+    fontSize: 20,
+    fontFamily: 'Inter-Variable',
+    marginTop: -30,
   },
 });
 
