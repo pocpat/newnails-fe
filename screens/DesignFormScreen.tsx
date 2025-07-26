@@ -1,26 +1,32 @@
-
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Modal, Text, ScrollView } from 'react-native';
-import { Button, ActivityIndicator } from 'react-native-paper';
-import SelectorRow from '../components/SelectorRow'; // Import the new component
+import React, { useState, useEffect, useRef } from 'react';
+import { View, StyleSheet, Text, ScrollView, ImageBackground, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import SelectorRow from '../components/SelectorRow';
 import { generateDesigns } from '../lib/api';
 
-// Data arrays for selection categories
 const lengthOptions = ["Short", "Medium", "Long"];
 const shapeOptions = ["Square", "Round", "Almond", "Squoval", "Pointed", "Ballerina"];
 const styleOptions = ["Classic French", "Floral", "Line Art", "Geometric", "Ombre", "Abstract", "Dot Nails", "Glitter"];
 const colorConfigOptions = ["Base Color Picker", "Monochromatic", "Analogous", "Complimentary", "Triad", "Tetradic"];
 
 const DesignFormScreen = ({ navigation, route }) => {
-  // State for user's selections
   const [selectedLength, setSelectedLength] = useState(null);
   const [selectedShape, setSelectedShape] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState(null);
   const [selectedColorConfig, setSelectedColorConfig] = useState(null);
-
-  // State to control the active part of the form
-  const [activeSection, setActiveSection] = useState('length'); // Initial active section
   const [loading, setLoading] = useState(false);
+  const [activeSection, setActiveSection] = useState('length');
+
+  const scrollViewRef = useRef(null);
+
+  // Define approximate Y offsets for each section
+  const sectionOffsets = useRef({
+    length: 0,
+    shape: 280, // Approximate offset for shape section
+    style: 550, // Approximate offset for style section
+    color: 800, // Approximate offset for color section
+    done: 1350, // Approximate offset for the end of the form
+  });
 
   useEffect(() => {
     if (route.params?.clear) {
@@ -29,157 +35,114 @@ const DesignFormScreen = ({ navigation, route }) => {
       setSelectedStyle(null);
       setSelectedColorConfig(null);
       setActiveSection('length');
-      // Reset the navigation params to avoid an infinite loop
+      if (scrollViewRef.current) {
+        scrollViewRef.current.scrollTo({ y: 0, animated: false });
+      }
       navigation.setParams({ clear: false });
     }
   }, [route.params?.clear]);
 
-  // Function to handle selection and advance the active section
-  const handleSelect = (category, value) => {
-    switch (category) {
-      case 'length':
-        setSelectedLength(value);
-        setActiveSection('shape');
-        break;
-      case 'shape':
-        setSelectedShape(value);
-        setActiveSection('style');
-        break;
-      case 'style':
-        setSelectedStyle(value);
-        setActiveSection('color');
-        break;
-      case 'color':
-        setSelectedColorConfig(value);
-        // No next section, all options selected
-        break;
-      default:
-        break;
+  const allOptionsSelected = selectedLength && selectedShape && selectedStyle && selectedColorConfig;
+
+  const handleSelect = (setter, value, nextSection) => {
+    setter(value);
+    setActiveSection(nextSection);
+
+    if (scrollViewRef.current) {
+      const targetOffset = sectionOffsets.current[nextSection];
+      if (typeof targetOffset === 'number') {
+        scrollViewRef.current.scrollTo({ y: targetOffset, animated: true });
+      }
     }
   };
-
-  // Check if all options are selected to enable the "Impress Me" button
-  const allOptionsSelected = selectedLength && selectedShape && selectedStyle && selectedColorConfig;
 
   const handleImpressMe = async () => {
     setLoading(true);
     try {
-      // Construct the prompt for the AI model
-      const prompt = `A detailed close up Nail design with ${selectedLength} length, ${selectedShape} shape, ${selectedStyle} style, and ${selectedColorConfig} color configuration.`;
 
-      // Call the generateDesigns API
-      const generatedImages = await generateDesigns({
-        prompt,
-        model: "stabilityai/sdxl-turbo:free", // Using a default model for now
-        // You can add width, height, num_images if needed
-      });
+      const prompt = `A detailed closeup Nail design with ${selectedLength} length, ${selectedShape} shape, ${selectedStyle} style, and ${selectedColorConfig} color configuration.`
+      const generatedImages = await generateDesigns({ prompt, model: "stabilityai/sdxl-turbo:free" });
 
       setLoading(false);
-      navigation.navigate('Results', {
-        generatedImages: generatedImages, // Pass the actual generated images
-        // You might still want to pass the design options for display on the results screen
-        length: selectedLength,
-        shape: selectedShape,
-        style: selectedStyle,
-        colorConfig: selectedColorConfig,
-      });
+      navigation.navigate('Results', { generatedImages, length: selectedLength, shape: selectedShape, style: selectedStyle, colorConfig: selectedColorConfig });
     } catch (error) {
       setLoading(false);
       console.error("Error generating designs:", error);
-      // Optionally, show an alert to the user
       alert("Failed to generate designs. Please try again.");
     }
   };
 
   return (
-    <ScrollView style={styles.scrollViewContainer}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Create Your Design</Text>
+    <ImageBackground
+      source={require('../assets/images/bg1.png')}
+      style={styles.background}
+    >
+      <LinearGradient
+        colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']}
+        style={styles.overlay}
+      >
+        <ScrollView ref={scrollViewRef} contentContainerStyle={styles.scrollViewContainer}>
+          <Text style={styles.title}>Create Your Masterpiece</Text>
 
-        <SelectorRow
-          title="Nail Length"
-          options={lengthOptions}
-          onSelect={(value) => handleSelect('length', value)}
-          selectedValue={selectedLength}
-          isActive={activeSection === 'length'}
-          onPress={() => setActiveSection('length')}
-        />
-        <SelectorRow
-          title="Nail Shape"
-          options={shapeOptions}
-          onSelect={(value) => handleSelect('shape', value)}
-          selectedValue={selectedShape}
-          isActive={activeSection === 'shape'}
-          onPress={() => setActiveSection('shape')}
-        />
-        <SelectorRow
-          title="Nail Style"
-          options={styleOptions}
-          onSelect={(value) => handleSelect('style', value)}
-          selectedValue={selectedStyle}
-          isActive={activeSection === 'style'}
-          onPress={() => setActiveSection('style')}
-        />
-        <SelectorRow
-          title="Color Configuration"
-          options={colorConfigOptions}
-          onSelect={(value) => handleSelect('color', value)}
-          selectedValue={selectedColorConfig}
-          isActive={activeSection === 'color'}
-          onPress={() => setActiveSection('color')}
-        />
+          <SelectorRow title="Nail Length" options={lengthOptions} onSelect={(value) => handleSelect(setSelectedLength, value, 'shape')} selectedValue={selectedLength} style={activeSection === 'length' ? styles.activeSection : styles.inactiveSection} />
+          <SelectorRow title="Nail Shape" options={shapeOptions} onSelect={(value) => handleSelect(setSelectedShape, value, 'style')} selectedValue={selectedShape} style={activeSection === 'shape' ? styles.activeSection : styles.inactiveSection} />
+          <SelectorRow title="Nail Style" options={styleOptions} onSelect={(value) => handleSelect(setSelectedStyle, value, 'color')} selectedValue={selectedStyle} style={activeSection === 'style' ? styles.activeSection : styles.inactiveSection} />
+          <SelectorRow title="Color Palette" options={colorConfigOptions} onSelect={(value) => handleSelect(setSelectedColorConfig, value, 'done')} selectedValue={selectedColorConfig} style={activeSection === 'color' ? styles.activeSection : styles.inactiveSection} />
 
-        {allOptionsSelected && (
-          <View style={styles.impressMeButtonContainer}>
-            <Button
-              mode="contained"
-              onPress={handleImpressMe}
-              style={styles.impressMeButton}
-              disabled={loading}
-            >
-              {loading ? <ActivityIndicator color="white" /> : "Impress Me"}
-            </Button>
-          </View>
-        )}
-      </View>
-    </ScrollView>
+          {allOptionsSelected && (
+            <TouchableOpacity style={styles.impressMeButton} onPress={handleImpressMe} disabled={loading}>
+              {loading ? <ActivityIndicator color="#4B0082" /> : <Text style={styles.buttonText}>Impress Me</Text>}
+            </TouchableOpacity>
+          )}
+          <View style={styles.spacer} />
+        </ScrollView>
+      </LinearGradient>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: { flex: 1 },
+  overlay: { flex: 1 },
   scrollViewContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  container: {
-    flex: 1,
     padding: 20,
-    paddingTop: 40, // Adjust for header if needed
+    paddingTop: 40,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 30,
+    fontSize: 36,
+    fontFamily: 'PottaOne-Regular',
+    color: '#FFFFFF',
     textAlign: 'center',
-    color: '#333',
+    marginBottom: 30,
   },
-  impressMeButtonContainer: {
-    marginTop: 30,
-    alignSelf: 'center',
+  activeSection: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  inactiveSection: {
+    opacity: 0.5,
   },
   impressMeButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
     borderRadius: 30,
-    backgroundColor: '#6200ee', // Example primary color
-    elevation: 5, // Shadow for Android
-    shadowColor: '#000', // Shadow for iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    minWidth: 150,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontFamily: 'Inter-Bold',
+    color: '#4B0082',
+  },
+  spacer: {
+    height: Dimensions.get('window').height / 2,
   },
 });
 

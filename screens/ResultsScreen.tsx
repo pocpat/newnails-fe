@@ -1,20 +1,25 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, Dimensions, Modal, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Button, Card, IconButton } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  Modal,
+  TouchableOpacity,
+  ActivityIndicator,
+  ImageBackground,
+  Dimensions,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Card, IconButton } from 'react-native-paper';
 import * as api from '../lib/api';
-import MainHeader from '../components/MainHeader';
 
-const { width } = Dimensions.get('window');
-const IMAGE_SIZE = (width - 40) / 2; // Two images per row with some padding
-
-// Define the list of models to use for generation
 const IMAGE_GENERATION_MODELS = [
   'stabilityai/sdxl-turbo:free',
   'google/gemini-2.0-flash-exp:free',
   'black-forest-labs/FLUX-1-schnell:free',
   'HiDream-ai/HiDream-I1-Full:free',
-  // 'lodestones/Chroma:free', // Chroma model might require specific parameters or have issues
-  // 'ByteDance/InfiniteYou:free', // InfiniteYou model might require specific parameters or have issues
 ];
 
 const ResultsScreen = ({ route, navigation }) => {
@@ -23,19 +28,6 @@ const ResultsScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [fullScreenImage, setFullScreenImage] = useState(null);
-  const [hasFetched, setHasFetched] = useState(false);
-
-  const handleTryAgain = () => {
-    setHasFetched(false); // Reset fetch status
-  };
-
-  useEffect(() => {
-    navigation.setOptions({
-      header: () => (
-        <MainHeader />
-      ),
-    });
-  }, [navigation]);
 
   useEffect(() => {
     const fetchDesigns = async () => {
@@ -51,20 +43,19 @@ const ResultsScreen = ({ route, navigation }) => {
             const response = await api.generateDesigns({
               prompt,
               model,
-              n: 1, // Request 1 image per model
-              size: '1024x1024',
+              num_images: 1,
+              width: 1024,
+              height: 1024,
             });
-            // Assuming response.imageUrls is an array of URLs
             if (response.imageUrls && response.imageUrls.length > 0) {
               allGeneratedImages.push({
                 id: `${model}-${allGeneratedImages.length}`,
-                url: response.imageUrls[0], // Take the first image from the response
+                url: response.imageUrls[0],
                 saved: false,
               });
             }
           } catch (modelError) {
             console.error(`Error generating with model ${model}:`, modelError);
-            // Continue to the next model even if one fails
           }
         }
         setGeneratedDesigns(allGeneratedImages);
@@ -73,17 +64,13 @@ const ResultsScreen = ({ route, navigation }) => {
         console.error('Error generating designs:', err);
       } finally {
         setLoading(false);
-        setHasFetched(true); // Mark as fetched
       }
     };
 
-    if (!hasFetched) {
-      fetchDesigns();
-    }
-  }, [length, shape, style, colorConfig, hasFetched]);
+    fetchDesigns();
+  }, [length, shape, style, colorConfig]);
 
   const handleSaveDesign = async (designToSave) => {
-    // Optimistically update the UI to show the design as saved
     setGeneratedDesigns(prevDesigns =>
       prevDesigns.map(design =>
         design.id === designToSave.id ? { ...design, saved: true } : design
@@ -97,7 +84,6 @@ const ResultsScreen = ({ route, navigation }) => {
       });
     } catch (error) {
       console.error("Failed to save design:", error);
-      // Revert the UI change on error
       setGeneratedDesigns(prevDesigns =>
         prevDesigns.map(design =>
           design.id === designToSave.id ? { ...design, saved: false } : design
@@ -110,19 +96,25 @@ const ResultsScreen = ({ route, navigation }) => {
   const renderDesignItem = ({ item }) => (
     <Card style={styles.designCard}>
       <TouchableOpacity onPress={() => setFullScreenImage(item.url)}>
-        <Image source={{ uri: item.url }} style={styles.designImage} />
+        <Image
+          source={{ uri: item.url }}
+          style={styles.designImage}
+          onError={(e) => console.error('Image loading error:', e.nativeEvent.error, 'for URL:', item.url)}
+        />
       </TouchableOpacity>
       <Card.Actions style={styles.cardActions}>
         <IconButton
-          icon={item.saved ? "check" : "content-save"}
-          color={item.saved ? "green" : "gray"}
+          icon={item.saved ? "check-circle" : "content-save-outline"}
+          iconColor={item.saved ? "#4CAF50" : "#FFFFFF"}
           onPress={() => handleSaveDesign(item)}
           disabled={item.saved}
+          size={24}
         />
         <IconButton
           icon="fullscreen"
-          color="gray"
+          iconColor="#FFFFFF"
           onPress={() => setFullScreenImage(item.url)}
+          size={24}
         />
       </Card.Actions>
     </Card>
@@ -130,99 +122,122 @@ const ResultsScreen = ({ route, navigation }) => {
 
   if (loading) {
     return (
-      <View style={styles.centeredContainer}>
-        <ActivityIndicator size="large" />
-        <Text style={styles.loadingText}>Generating your unique designs...</Text>
-      </View>
+      <ImageBackground source={require('../assets/images/bg1.png')} style={styles.background}>
+        <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']} style={styles.overlay}>
+          <View style={styles.centeredContainer}>
+            <ActivityIndicator size="large" color="#FFFFFF" />
+            <Text style={styles.loadingText}>Generating your unique designs...</Text>
+          </View>
+        </LinearGradient>
+      </ImageBackground>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.centeredContainer}>
-        <Text style={styles.errorText}>{error}</Text>
-        <Button mode="contained" onPress={handleTryAgain}>
-          Try Again
-        </Button>
-      </View>
+      <ImageBackground source={require('../assets/images/bg1.png')} style={styles.background}>
+        <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']} style={styles.overlay}>
+          <View style={styles.centeredContainer}>
+            <Text style={styles.errorText}>{error}</Text>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+              <Text style={styles.buttonText}>Go Back</Text>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+      </ImageBackground>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Your Generated Designs</Text>
-      <FlatList
-        data={generatedDesigns}
-        renderItem={renderDesignItem}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        contentContainerStyle={styles.flatListContent}
-      />
-
-      <Modal
-        visible={!!fullScreenImage}
-        transparent={true}
-        onRequestClose={() => setFullScreenImage(null)}
-      >
-        <View style={styles.fullScreenModalContainer}>
-          <Image source={{ uri: fullScreenImage }} style={styles.fullScreenImage} resizeMode="contain" />
-          <TouchableOpacity style={styles.closeButton} onPress={() => setFullScreenImage(null)}>
-            <Text style={styles.closeButtonText}>X</Text>
-          </TouchableOpacity>
+    <ImageBackground source={require('../assets/images/bg1.png')} style={styles.background}>
+      <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']} style={styles.overlay}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Your Designs</Text>
+          <FlatList
+            data={generatedDesigns}
+            renderItem={renderDesignItem}
+            keyExtractor={(item) => item.id}
+            numColumns={2}
+            contentContainerStyle={styles.flatListContent}
+          />
         </View>
-      </Modal>
-    </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={!!fullScreenImage}
+          onRequestClose={() => setFullScreenImage(null)}
+        >
+          <View style={styles.fullScreenModalContainer}>
+            <Image
+              source={{ uri: fullScreenImage }}
+              style={styles.fullScreenImage}
+              resizeMode="contain"
+            />
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setFullScreenImage(null)}
+            >
+              <Text style={styles.closeButtonText}>X</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </LinearGradient>
+    </ImageBackground>
   );
 };
 
+
 const styles = StyleSheet.create({
+  background: { flex: 1 },
+  overlay: { flex: 1 },
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#f5f5f5',
   },
   centeredContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    padding: 20,
   },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontSize: 36,
+    fontFamily: 'PottaOne-Regular',
+    color: '#FFFFFF',
     textAlign: 'center',
-    marginVertical: 15,
-    color: '#333',
+    marginVertical: 20,
   },
   loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#555',
+    marginTop: 20,
+    fontSize: 18,
+    fontFamily: 'Inter-Variable',
+    color: '#FFFFFF',
   },
   errorText: {
-    fontSize: 16,
-    color: 'red',
+    fontSize: 18,
+    fontFamily: 'Inter-Variable',
+    color: '#FF6B6B',
     textAlign: 'center',
     marginBottom: 20,
   },
   flatListContent: {
-    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   designCard: {
-    flex: 1,
     margin: 5,
-    borderRadius: 8,
+    borderRadius: 15,
     overflow: 'hidden',
-    elevation: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   designImage: {
-    width: IMAGE_SIZE,
-    height: IMAGE_SIZE,
-    resizeMode: 'cover',
+    width: (Dimensions.get('window').width / 2) - 20,
+    height: (Dimensions.get('window').width / 2) - 20,
   },
   cardActions: {
     justifyContent: 'space-around',
-    paddingHorizontal: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   fullScreenModalContainer: {
     flex: 1,
@@ -231,24 +246,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   fullScreenImage: {
-    width: '90%',
-    height: '90%',
+    width: '95%',
+    height: '80%',
   },
   closeButton: {
     position: 'absolute',
-    top: 40,
+    top: 50,
     right: 20,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 15,
-    width: 30,
-    height: 30,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 20,
+    width: 40,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },
   closeButtonText: {
     color: 'white',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'Inter-Bold',
+  },
+  button: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 30,
+    alignSelf: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontFamily: 'Inter-Bold',
+    color: '#4B0082',
   },
 });
 
