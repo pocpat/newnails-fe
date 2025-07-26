@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Text, ScrollView, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, ImageBackground, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import SelectorRow from '../components/SelectorRow';
 import { generateDesigns } from '../lib/api';
@@ -22,10 +22,10 @@ const DesignFormScreen = ({ navigation, route }) => {
   // Define approximate Y offsets for each section
   const sectionOffsets = useRef({
     length: 0,
-    shape: 200, // Approximate offset for shape section
-    style: 400, // Approximate offset for style section
-    color: 600, // Approximate offset for color section
-    done: 800, // Approximate offset for the end of the form
+    shape: 280, // Approximate offset for shape section
+    style: 550, // Approximate offset for style section
+    color: 800, // Approximate offset for color section
+    done: 1350, // Approximate offset for the end of the form
   });
 
   useEffect(() => {
@@ -92,6 +92,7 @@ const DesignFormScreen = ({ navigation, route }) => {
               {loading ? <ActivityIndicator color="#4B0082" /> : <Text style={styles.buttonText}>Impress Me</Text>}
             </TouchableOpacity>
           )}
+          <View style={styles.spacer} />
         </ScrollView>
       </LinearGradient>
     </ImageBackground>
@@ -137,6 +138,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Inter-Bold',
     color: '#4B0082',
+  },
+  spacer: {
+    height: Dimensions.get('window').height / 2,
   },
 });
 
