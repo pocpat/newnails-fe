@@ -98,12 +98,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonLabel: {
-    color: '#4B0082',
+    color: 'rgba(0, 0, 0, 0.3)',
     fontFamily: 'Inter-Bold',
     fontSize: 12, // Smaller font size for the button label
   },
   tryAgainButton: {
-    backgroundColor: '#E0BBE4',
+    backgroundColor: '#ab8a98',
     borderRadius: 20,
     paddingHorizontal: 10, // Reduced horizontal padding
     paddingVertical: 3, // Reduced vertical padding

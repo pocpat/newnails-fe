@@ -11,7 +11,7 @@ import {
   ImageBackground,
   Dimensions,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+
 import { Card, IconButton } from 'react-native-paper';
 import * as api from '../lib/api';
 
@@ -123,12 +123,10 @@ const ResultsScreen = ({ route, navigation }) => {
   if (loading) {
     return (
       <ImageBackground source={require('../assets/images/bg1.png')} style={styles.background}>
-        <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']} style={styles.overlay}>
           <View style={styles.centeredContainer}>
             <ActivityIndicator size="large" color="#FFFFFF" />
             <Text style={styles.loadingText}>Generating your unique designs...</Text>
           </View>
-        </LinearGradient>
       </ImageBackground>
     );
   }
@@ -136,21 +134,18 @@ const ResultsScreen = ({ route, navigation }) => {
   if (error) {
     return (
       <ImageBackground source={require('../assets/images/bg1.png')} style={styles.background}>
-        <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']} style={styles.overlay}>
           <View style={styles.centeredContainer}>
             <Text style={styles.errorText}>{error}</Text>
             <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
               <Text style={styles.buttonText}>Go Back</Text>
             </TouchableOpacity>
           </View>
-        </LinearGradient>
       </ImageBackground>
     );
   }
 
   return (
     <ImageBackground source={require('../assets/images/bg1.png')} style={styles.background}>
-      <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']} style={styles.overlay}>
         <View style={styles.container}>
           <Text style={styles.title}>Your Designs</Text>
           <FlatList
@@ -181,7 +176,6 @@ const ResultsScreen = ({ route, navigation }) => {
             </TouchableOpacity>
           </View>
         </Modal>
-      </LinearGradient>
     </ImageBackground>
   );
 };

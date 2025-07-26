@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Text, ScrollView, ImageBackground, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import SelectorRow from '../components/SelectorRow';
 import { generateDesigns } from '../lib/api';
 
@@ -75,10 +74,6 @@ const DesignFormScreen = ({ navigation, route }) => {
       source={require('../assets/images/bg1.png')}
       style={styles.background}
     >
-      <LinearGradient
-        colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']}
-        style={styles.overlay}
-      >
         <ScrollView ref={scrollViewRef} contentContainerStyle={styles.scrollViewContainer}>
           <Text style={styles.title}>Create Your Masterpiece</Text>
 
@@ -94,14 +89,16 @@ const DesignFormScreen = ({ navigation, route }) => {
           )}
           <View style={styles.spacer} />
         </ScrollView>
-      </LinearGradient>
-    </ImageBackground>
+      </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  background: { flex: 1 },
-  overlay: { flex: 1 },
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   scrollViewContainer: {
     padding: 20,
     paddingTop: 40,
