@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { Card, IconButton, ToggleButton } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
+
 import * as api from '../lib/api';
 
 const { width } = Dimensions.get('window');
@@ -122,7 +122,6 @@ const MyDesignsScreen = ({ navigation }) => {
 
   return (
     <ImageBackground source={require('../assets/images/bg1.png')} style={styles.background}>
-      <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']} style={styles.overlay}>
         <View style={styles.container}>
           <Text style={styles.title}>My Saved Designs</Text>
           <View style={styles.sortContainer}>
@@ -157,14 +156,16 @@ const MyDesignsScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </Modal>
-      </LinearGradient>
-    </ImageBackground>
+      </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-    background: { flex: 1 },
-    overlay: { flex: 1 },
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
     container: { flex: 1, padding: 10 },
     centeredContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     title: { fontSize: 36, fontFamily: 'PottaOne-Regular', color: '#FFFFFF', textAlign: 'center', marginVertical: 20 },

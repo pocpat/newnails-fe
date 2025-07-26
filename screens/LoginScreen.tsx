@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Alert, ImageBackground, TouchableOpacity } from
 import { TextInput } from 'react-native-paper';
 import { auth } from '../lib/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -32,10 +31,6 @@ const LoginScreen = ({ navigation }) => {
       source={require('../assets/images/bg1.png')}
       style={styles.background}
     >
-      <LinearGradient
-        colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']}
-        style={styles.overlay}
-      >
         <View style={styles.container}>
           <Text style={styles.title}>{isLogin ? 'Welcome Back' : 'Join Tipsy'}</Text>
           <TextInput
@@ -71,17 +66,15 @@ const LoginScreen = ({ navigation }) => {
             <Text style={styles.backButtonText}>Back</Text>
           </TouchableOpacity>
         </View>
-      </LinearGradient>
-    </ImageBackground>
+      </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-  },
-  overlay: {
-    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   container: {
     flex: 1,
@@ -104,7 +97,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   button: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: '#ab8a98',
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 30,
