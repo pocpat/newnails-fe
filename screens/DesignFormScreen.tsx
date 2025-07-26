@@ -59,8 +59,10 @@ const DesignFormScreen = ({ navigation, route }) => {
   const handleImpressMe = async () => {
     setLoading(true);
     try {
+
       const prompt = `A detailed closeup Nail design with ${selectedLength} length, ${selectedShape} shape, ${selectedStyle} style, and ${selectedColorConfig} color configuration.`
       const generatedImages = await generateDesigns({ prompt, model: "stabilityai/sdxl-turbo:free" });
+
       setLoading(false);
       navigation.navigate('Results', { generatedImages, length: selectedLength, shape: selectedShape, style: selectedStyle, colorConfig: selectedColorConfig });
     } catch (error) {
