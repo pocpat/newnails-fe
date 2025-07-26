@@ -10,6 +10,8 @@ import LoginScreen from './screens/LoginScreen';
 import MainHeader from './components/MainHeader';
 import Footer from './components/Footer';
 import { AuthProvider, useAuth } from './lib/auth'; // Import from the new auth file
+import { useFonts } from 'expo-font';
+import { PottaOne_400Regular } from '@expo-google-fonts/potta-one';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -63,6 +65,14 @@ function AppNavigator() {
 }
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    'PottaOne-Regular': PottaOne_400Regular,
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <PaperProvider>
       <AuthProvider>
