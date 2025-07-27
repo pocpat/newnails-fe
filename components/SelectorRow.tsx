@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StyleProp, ViewStyle, LayoutChangeEvent, Image } from 'react-native';
+import { SvgProps } from 'react-native-svg';
 
 export interface SelectorOption {
   value: string;
-icon: React.FC<React.SVGProps<SVGSVGElement>>;}
+  icon: React.FC<SvgProps>;
+}
 
 interface SelectorRowProps {
   title: string;
