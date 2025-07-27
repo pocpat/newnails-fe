@@ -27,7 +27,40 @@ const shapeOptions: SelectorOption[] = [
   { value: "Pointed", icon: ShapePointedIcon },
   { value: "Ballerina", icon: ShapeBallerinaIcon },
 ];
-const styleOptions = ["Classic French", "Floral", "Line Art", "Geometric", "Ombre", "Abstract", "Dot Nails", "Glitter"];
+//const styleOptions = ["French", "Floral", "Line Art", "Geometric", "Ombre", "Abstract", "Dot Nails", "Glitter"];
+
+import StyleFrenchIcon from '../assets/images/style_french.svg';
+import StyleFloralIcon from '../assets/images/style_floral.svg';
+import StyleLineArtIcon from '../assets/images/style_line.svg';
+import StyleGeometricIcon from '../assets/images/style_geometric.svg';
+import StyleOmbreIcon from '../assets/images/style_ombre.svg';
+import StyleAbstractIcon from '../assets/images/style_abstract.svg';
+import StyleDotNailsIcon from '../assets/images/style_dots.svg';
+import StyleGlitterIcon from '../assets/images/style_glitter.svg'
+
+
+
+
+
+const styleOptions: SelectorOption[] = [
+  { value: "French", icon: StyleFrenchIcon },
+  { value: "Floral", icon: StyleFloralIcon },
+  { value: "Line Art", icon: StyleLineArtIcon },
+  { value: "Geometric", icon: StyleGeometricIcon },
+  { value: "Ombre", icon: StyleOmbreIcon },
+  { value: "Abstract", icon: StyleAbstractIcon },
+  { value: "Dot Nails", icon: StyleDotNailsIcon },
+  { value: "Glitter", icon: StyleGlitterIcon },
+];
+
+
+
+
+
+
+
+
+
 const colorConfigOptions = ["Base Color Picker", "Monochromatic", "Analogous", "Complimentary", "Triad", "Tetradic"];
 
 const DesignFormScreen = ({ navigation, route }) => {
