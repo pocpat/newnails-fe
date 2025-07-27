@@ -1,10 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Text, ScrollView, ImageBackground, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
-import SelectorRow from '../components/SelectorRow';
+import { View, StyleSheet, Text, ScrollView, ImageBackground, ActivityIndicator, Dimensions } from 'react-native';
+import ThreeDButton from '../components/ThreeDButton';
+import SelectorRow, { SelectorOption } from '../components/SelectorRow';
 import { generateDesigns } from '../lib/api';
+import LengthShortIcon from '../assets/images/length_short.svg';
+import LengthMediumIcon from '../assets/images/length_medium.svg';
+import LengthLongIcon from '../assets/images/length_long.svg';
 
-const lengthOptions = ["Short", "Medium", "Long"];
-const shapeOptions = ["Square", "Round", "Almond", "Squoval", "Pointed", "Ballerina"];
+const lengthOptions: SelectorOption[] = [
+  { value: "Short", icon: LengthShortIcon },
+  { value: "Medium", icon: LengthMediumIcon },
+  { value: "Long", icon: LengthLongIcon },
+];
+import ShapeSquareIcon from '../assets/images/shape_square.svg';
+import ShapeRoundIcon from '../assets/images/shape_round.svg';
+import ShapeAlmondIcon from '../assets/images/shape_almond.svg';
+import ShapeSquovalIcon from '../assets/images/shape_squoval.svg';
+import ShapePointedIcon from '../assets/images/shape_pointed.svg';
+import ShapeBallerinaIcon from '../assets/images/shape_ballerina.svg';
+
+const shapeOptions: SelectorOption[] = [
+  { value: "Square", icon: ShapeSquareIcon },
+  { value: "Round", icon: ShapeRoundIcon },
+  { value: "Almond", icon: ShapeAlmondIcon },
+  { value: "Squoval", icon: ShapeSquovalIcon },
+  { value: "Pointed", icon: ShapePointedIcon },
+  { value: "Ballerina", icon: ShapeBallerinaIcon },
+];
 const styleOptions = ["Classic French", "Floral", "Line Art", "Geometric", "Ombre", "Abstract", "Dot Nails", "Glitter"];
 const colorConfigOptions = ["Base Color Picker", "Monochromatic", "Analogous", "Complimentary", "Triad", "Tetradic"];
 
@@ -21,7 +43,7 @@ const DesignFormScreen = ({ navigation, route }) => {
   // Define approximate Y offsets for each section
   const sectionOffsets = useRef({
     length: 0,
-    shape: 280, // Approximate offset for shape section
+    shape: 300, // Approximate offset for shape section
     style: 550, // Approximate offset for style section
     color: 800, // Approximate offset for color section
     done: 1350, // Approximate offset for the end of the form
@@ -83,14 +105,18 @@ const DesignFormScreen = ({ navigation, route }) => {
           <SelectorRow title="Color Palette" options={colorConfigOptions} onSelect={(value) => handleSelect(setSelectedColorConfig, value, 'done')} selectedValue={selectedColorConfig} style={activeSection === 'color' ? styles.activeSection : styles.inactiveSection} />
 
           {allOptionsSelected && (
-            <TouchableOpacity style={styles.impressMeButton} onPress={handleImpressMe} disabled={loading}>
-              {loading ? <ActivityIndicator color="#4B0082" /> : <Text style={styles.buttonText}>Impress Me</Text>}
-            </TouchableOpacity>
+            <ThreeDButton
+              onPress={handleImpressMe}
+              disabled={loading}
+              loading={loading}
+              title="Impress Me"
+            />
           )}
           <View style={styles.spacer} />
         </ScrollView>
       </ImageBackground>
   );
+  
 };
 
 const styles = StyleSheet.create({
@@ -118,24 +144,7 @@ const styles = StyleSheet.create({
   inactiveSection: {
     opacity: 0.5,
   },
-  impressMeButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 30,
-    alignSelf: 'center',
-    marginTop: 30,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontFamily: 'Inter-Bold',
-    color: '#4B0082',
-  },
+  
   spacer: {
     height: Dimensions.get('window').height / 2,
   },
