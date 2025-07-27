@@ -76,10 +76,10 @@ const DesignFormScreen = ({ navigation, route }) => {
   // Define approximate Y offsets for each section
   const sectionOffsets = useRef({
     length: 0,
-    shape: 300, // Approximate offset for shape section
-    style: 550, // Approximate offset for style section
-    color: 800, // Approximate offset for color section
-    done: 1350, // Approximate offset for the end of the form
+    shape: 320, // Approximate offset for shape section
+    style: 650, // Approximate offset for style section
+    color: 900, // Approximate offset for color section
+    done: 2500, // Approximate offset for the end of the form
   });
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StyleProp, ViewStyle, LayoutChangeEvent, Image } from 'react-native';
 
-interface SelectorOption {
+export interface SelectorOption {
   value: string;
 icon: React.FC<React.SVGProps<SVGSVGElement>>;}
 
