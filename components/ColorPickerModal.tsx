@@ -28,7 +28,7 @@ const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ isVisible, onSelect
       onRequestClose={onClose}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
+        <View style={[styles.modalView, { backgroundColor: currentColor }]}>
           <Text style={styles.modalTitle}>Pick a Base Color</Text>
           <ColorPicker
             onColorChange={handleColorChange}
@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
