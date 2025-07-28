@@ -44,7 +44,7 @@ import StyleGeometricIcon from '../assets/images/style_geometric.svg';
 import StyleOmbreIcon from '../assets/images/style_ombre.svg';
 import StyleAbstractIcon from '../assets/images/style_abstract.svg';
 import StyleDotNailsIcon from '../assets/images/style_dots.svg';
-import StyleGlitterIcon from '../assets/images/style_glitter.svg'
+import StyleGlitterIcon from '../assets/images/style_glitter.png'
 
 
 
