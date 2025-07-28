@@ -132,16 +132,12 @@ const DesignFormScreen = ({ navigation, route }) => {
   };
 
   const handleSelect = (setter, value, nextSection) => {
+    const startTime = Date.now();
+    console.log('handleSelect called');
     if (value === "Select") {
       setShowColorPicker(true);
       return;
     }
-
-    // This check should be in SelectorRow, not here.
-    // if (title === "Color Palette" && value !== "Select" && !isBaseColorSelected) {
-    //   // Prevent selection of color schemes if base color is not yet selected
-    //   return;
-    // }
 
     setter(value);
     setActiveSection(nextSection);
@@ -149,9 +145,11 @@ const DesignFormScreen = ({ navigation, route }) => {
     if (scrollViewRef.current) {
       const targetOffset = sectionOffsets.current[nextSection];
       if (typeof targetOffset === 'number') {
-        scrollViewRef.current.scrollTo({ y: targetOffset, animated: true });
+        scrollViewRef.current.scrollTo({ y: targetOffset, animated: false });
       }
     }
+    const endTime = Date.now();
+    console.log(`handleSelect execution time: ${endTime - startTime}ms`);
   };
 
   const handleImpressMe = async () => {

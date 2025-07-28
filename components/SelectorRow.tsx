@@ -20,7 +20,7 @@ interface SelectorRowProps {
   isActive?: boolean; // New prop to indicate if the row is active
 }
 
-const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, onSelect, selectedValue, style, onLayout, baseColor, isBaseColorSelected, isActive }, ref) => {
+const SelectorRow = React.memo(React.forwardRef<View, SelectorRowProps>(({ title, options, onSelect, selectedValue, style, onLayout, baseColor, isBaseColorSelected, isActive }, ref) => {
   // Helper function to determine if a color is light or dark
   const isColorLight = (hexColor: string) => {
     const r = parseInt(hexColor.substring(1, 3), 16);
@@ -100,7 +100,7 @@ const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, 
       </View>
     </View>
   );
-});
+}));
 
 const styles = StyleSheet.create({
   container: {
