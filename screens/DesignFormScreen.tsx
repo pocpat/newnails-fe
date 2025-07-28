@@ -115,7 +115,7 @@ const DesignFormScreen = ({ navigation, route }) => {
       setSelectedBaseColor(null); // Clear selected base color
       setActiveSection('length');
       if (scrollViewRef.current) {
-        scrollViewRef.current.scrollTo({ y: 0, animated: false });
+        scrollViewRef.current.scrollTo({ y: 0, animated: true });
       }
       navigation.setParams({ clear: false });
     }
@@ -141,12 +141,14 @@ const DesignFormScreen = ({ navigation, route }) => {
     setter(value);
     setActiveSection(nextSection);
 
-    if (scrollViewRef.current) {
-      const targetOffset = sectionOffsets.current[nextSection];
-      if (typeof targetOffset === 'number') {
-        scrollViewRef.current.scrollTo({ y: targetOffset, animated: false });
+    setTimeout(() => {
+      if (scrollViewRef.current) {
+        const targetOffset = sectionOffsets.current[nextSection];
+        if (typeof targetOffset === 'number') {
+          scrollViewRef.current.scrollTo({ y: targetOffset, animated: true });
+        }
       }
-    }
+    }, 50);
     const endTime = Date.now();
     console.log(`handleSelect execution time: ${endTime - startTime}ms`);
   };
