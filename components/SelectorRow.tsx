@@ -14,9 +14,19 @@ interface SelectorRowProps {
   selectedValue: string | null;
   style?: StyleProp<ViewStyle>;
   onLayout?: (event: LayoutChangeEvent) => void;
+  baseColor?: string | null; // New prop for the base color
 }
 
-const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, onSelect, selectedValue, style, onLayout }, ref) => {
+const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, onSelect, selectedValue, style, onLayout, baseColor }, ref) => {
+  // Helper function to determine if a color is light or dark
+  const isColorLight = (hexColor: string) => {
+    const r = parseInt(hexColor.substring(1, 3), 16);
+    const g = parseInt(hexColor.substring(3, 5), 16);
+    const b = parseInt(hexColor.substring(5, 7), 16);
+    const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    return brightness > 155; // Adjust threshold as needed
+  };
+
   return (
     <View ref={ref} style={[styles.container, style]} onLayout={onLayout}>
       <Text style={styles.title}>{title}</Text>
@@ -26,35 +36,35 @@ const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, 
           const value = isObject ? (option as SelectorOption).value : (option as string);
           const IconComponent = isObject ? (option as SelectorOption).icon : undefined;
 
-          // The console.log can be removed now that we've diagnosed the issue.
-          // console.log('IconComponent type:', typeof IconComponent, 'value:', IconComponent);
+          const isSelectedAndColorPalette = selectedValue === value && title === "Color Palette" && value === "Select" && baseColor;
+          const optionBackgroundColor = isSelectedAndColorPalette ? baseColor : (selectedValue === value ? styles.selectedOption.backgroundColor : styles.option.backgroundColor);
+          const optionBorderColor = isSelectedAndColorPalette ? baseColor : (selectedValue === value ? styles.selectedOption.borderColor : styles.option.borderColor);
+          const optionTextColor = isSelectedAndColorPalette ? (isColorLight(baseColor) ? '#000000' : '#FFFFFF') : (selectedValue === value ? styles.selectedOptionText.color : styles.optionText.color);
 
           return (
             <TouchableOpacity
               key={value}
               style={[
                 styles.option,
-                selectedValue === value && styles.selectedOption,
+                { backgroundColor: optionBackgroundColor, borderColor: optionBorderColor },
                 (title === "Nail Length" || title === "Nail Shape" || title === "Nail Style" || title === "Color Palette") && styles.lengthOption,
               ]}
               onPress={() => onSelect(value)}
             >
               {IconComponent ? (
-                // FIX: Render icon inside a fixed-size View to prevent layout loops, and also render the text.
                 <>
                   <View style={styles.optionIcon}>
                     <IconComponent width="100%" height="100%" />
                   </View>
-                  <Text style={[styles.optionText, selectedValue === value && styles.selectedOptionText]}>
+                  <Text style={[styles.optionText, { color: optionTextColor }]}>
                     {value}
                   </Text>
                 </>
               ) : (
-                // Fallback for options without an icon
                 <Text
                   style={[
                     styles.optionText,
-                    selectedValue === value && styles.selectedOptionText,
+                    { color: optionTextColor },
                   ]}
                 >
                   {value}
