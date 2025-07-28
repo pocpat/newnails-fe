@@ -157,13 +157,16 @@ const DesignFormScreen = ({ navigation, route }) => {
   const handleImpressMe = async () => {
     setLoading(true);
     try {
+
       let prompt = `A detailed closeup Nail design with ${selectedLength} length, ${selectedShape} shape, ${selectedStyle} style,`;
       if (selectedColorConfig === "Select" && selectedBaseColor) {
         prompt += ` and a base color of ${selectedBaseColor} with a ${selectedColorConfig} color configuration.`;
       } else {
         prompt += ` and ${selectedColorConfig} color configuration.`;
       }
+
       const generatedImages = await generateDesigns({ prompt, model: "stabilityai/sdxl-turbo:free" });
+
       setLoading(false);
       navigation.navigate('Results', { generatedImages, length: selectedLength, shape: selectedShape, style: selectedStyle, colorConfig: selectedColorConfig, baseColor: selectedBaseColor });
     } catch (error) {
