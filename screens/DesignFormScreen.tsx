@@ -1,17 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Text, ScrollView, ImageBackground, ActivityIndicator, Dimensions } from 'react-native';
 import ThreeDButton from '../components/ThreeDButton';
+
 import SelectorRow, { SelectorOption } from '../components/SelectorRow';
 import { generateDesigns } from '../lib/api';
+import ColorPickerModal from '../components/ColorPickerModal';
 import LengthShortIcon from '../assets/images/length_short.svg';
 import LengthMediumIcon from '../assets/images/length_medium.svg';
 import LengthLongIcon from '../assets/images/length_long.svg';
 
+
+// length section
 const lengthOptions: SelectorOption[] = [
   { value: "Short", icon: LengthShortIcon },
   { value: "Medium", icon: LengthMediumIcon },
   { value: "Long", icon: LengthLongIcon },
 ];
+
+// shape section
 import ShapeSquareIcon from '../assets/images/shape_square.svg';
 import ShapeRoundIcon from '../assets/images/shape_round.svg';
 import ShapeAlmondIcon from '../assets/images/shape_almond.svg';
@@ -29,6 +35,7 @@ const shapeOptions: SelectorOption[] = [
 ];
 //const styleOptions = ["French", "Floral", "Line Art", "Geometric", "Ombre", "Abstract", "Dot Nails", "Glitter"];
 
+// style section
 import StyleFrenchIcon from '../assets/images/style_french.svg';
 import StyleFloralIcon from '../assets/images/style_floral.svg';
 import StyleLineArtIcon from '../assets/images/style_line.svg';
@@ -59,15 +66,31 @@ const styleOptions: SelectorOption[] = [
 
 
 
+// color section
 
+import ColorBaseIcon from '../assets/images/color_select.svg';
+import ColorMonochromaticIcon from '../assets/images/color_mono.svg';
+import ColorAnalogousIcon from '../assets/images/color_analog.svg';
+import ColorComplimentaryIcon from '../assets/images/color_complim.svg';
+import ColorTriadIcon from '../assets/images/color_triad.svg';
+import ColorTetradicIcon from '../assets/images/color_tetra.svg';
 
-const colorConfigOptions = ["Base Color Picker", "Monochromatic", "Analogous", "Complimentary", "Triad", "Tetradic"];
+const colorConfigOptions: SelectorOption[] = [
+  { value: "Select", icon: ColorBaseIcon },
+  { value: "Mono", icon: ColorMonochromaticIcon },
+  { value: "Analog", icon: ColorAnalogousIcon },
+  { value: "Complim", icon: ColorComplimentaryIcon },
+  { value: "Triad", icon: ColorTriadIcon },
+  { value: "Tetradic", icon: ColorTetradicIcon },
+];
 
 const DesignFormScreen = ({ navigation, route }) => {
   const [selectedLength, setSelectedLength] = useState(null);
   const [selectedShape, setSelectedShape] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState(null);
   const [selectedColorConfig, setSelectedColorConfig] = useState(null);
+  const [selectedBaseColor, setSelectedBaseColor] = useState(null); // New state for custom base color
+  const [showColorPicker, setShowColorPicker] = useState(false); // State to control modal visibility
   const [loading, setLoading] = useState(false);
   const [activeSection, setActiveSection] = useState('length');
 
@@ -76,9 +99,9 @@ const DesignFormScreen = ({ navigation, route }) => {
   // Define approximate Y offsets for each section
   const sectionOffsets = useRef({
     length: 0,
-    shape: 320, // Approximate offset for shape section
-    style: 650, // Approximate offset for style section
-    color: 900, // Approximate offset for color section
+    shape: 340, // Approximate offset for shape section
+    style: 620, // Approximate offset for style section
+    color: 1020, // Approximate offset for color section
     done: 2500, // Approximate offset for the end of the form
   });
 
@@ -88,6 +111,7 @@ const DesignFormScreen = ({ navigation, route }) => {
       setSelectedShape(null);
       setSelectedStyle(null);
       setSelectedColorConfig(null);
+      setSelectedBaseColor(null); // Clear selected base color
       setActiveSection('length');
       if (scrollViewRef.current) {
         scrollViewRef.current.scrollTo({ y: 0, animated: false });
@@ -96,9 +120,19 @@ const DesignFormScreen = ({ navigation, route }) => {
     }
   }, [route.params?.clear]);
 
-  const allOptionsSelected = selectedLength && selectedShape && selectedStyle && selectedColorConfig;
+  const allOptionsSelected = selectedLength && selectedShape && selectedStyle && selectedColorConfig && (selectedColorConfig !== "Select" || selectedBaseColor);
+
+  const handleColorSelect = (hex: string) => {
+    setSelectedBaseColor(hex);
+    setSelectedColorConfig("Select"); // Set the color config to "Select" once a color is picked
+    setShowColorPicker(false);
+  };
 
   const handleSelect = (setter, value, nextSection) => {
+    if (value === "Select") {
+      setShowColorPicker(true);
+      return;
+    }
     setter(value);
     setActiveSection(nextSection);
 
@@ -113,10 +147,15 @@ const DesignFormScreen = ({ navigation, route }) => {
   const handleImpressMe = async () => {
     setLoading(true);
     try {
-      const prompt = `A detailed closeup Nail design with ${selectedLength} length, ${selectedShape} shape, ${selectedStyle} style, and ${selectedColorConfig} color configuration.`
+      let prompt = `A detailed closeup Nail design with ${selectedLength} length, ${selectedShape} shape, ${selectedStyle} style,`;
+      if (selectedColorConfig === "Select" && selectedBaseColor) {
+        prompt += ` and a base color of ${selectedBaseColor} with a ${selectedColorConfig} color configuration.`;
+      } else {
+        prompt += ` and ${selectedColorConfig} color configuration.`;
+      }
       const generatedImages = await generateDesigns({ prompt, model: "stabilityai/sdxl-turbo:free" });
       setLoading(false);
-      navigation.navigate('Results', { generatedImages, length: selectedLength, shape: selectedShape, style: selectedStyle, colorConfig: selectedColorConfig });
+      navigation.navigate('Results', { generatedImages, length: selectedLength, shape: selectedShape, style: selectedStyle, colorConfig: selectedColorConfig, baseColor: selectedBaseColor });
     } catch (error) {
       setLoading(false);
       console.error("Error generating designs:", error);
@@ -148,6 +187,12 @@ const DesignFormScreen = ({ navigation, route }) => {
           <View style={styles.spacer} />
         </ScrollView>
       </ImageBackground>
+
+      <ColorPickerModal
+        isVisible={showColorPicker}
+        onSelectColor={handleColorSelect}
+        onClose={() => setShowColorPicker(false)}
+      />
   );
   
 };

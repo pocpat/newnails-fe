@@ -35,7 +35,7 @@ const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, 
               style={[
                 styles.option,
                 selectedValue === value && styles.selectedOption,
-                (title === "Nail Length" || title === "Nail Shape" || title === "Nail Style") && styles.lengthOption,
+                (title === "Nail Length" || title === "Nail Shape" || title === "Nail Style" || title === "Color Palette") && styles.lengthOption,
               ]}
               onPress={() => onSelect(value)}
             >
