@@ -16,6 +16,7 @@ import { Card, IconButton, ToggleButton } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 
 import * as api from '../lib/api';
+import { Colors } from '../lib/colors';
 
 const { width } = Dimensions.get('window');
 
@@ -106,13 +107,13 @@ const MyDesignsScreen = ({ navigation }) => {
       <Card.Actions style={styles.cardActions}>
         <IconButton
           icon={item.isFavorite ? "star" : "star-outline"}
-          iconColor={item.isFavorite ? "#FFD700" : "#FFFFFF"}
+          iconColor={item.isFavorite ? Colors.gold : Colors.white}
           onPress={() => handleToggleFavorite(item.id)}
           size={24}
         />
         <IconButton
           icon="delete-outline"
-          iconColor="#FF6B6B"
+          iconColor={Colors.lightRedSalmon}
           onPress={() => handleDeleteDesign(item.id)}
           size={24}
         />
@@ -168,16 +169,16 @@ const styles = StyleSheet.create({
   },
     container: { flex: 1, padding: 10 },
     centeredContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    title: { fontSize: 36, fontFamily: 'PottaOne-Regular', color: '#FFFFFF', textAlign: 'center', marginVertical: 20 },
-    loadingText: { marginTop: 20, fontSize: 18, fontFamily: 'Inter-Variable', color: '#FFFFFF' },
-    errorText: { fontSize: 18, fontFamily: 'Inter-Variable', color: '#FF6B6B', textAlign: 'center', marginBottom: 20 },
-    emptyText: { fontSize: 18, fontFamily: 'Inter-Variable', color: '#FFFFFF', textAlign: 'center' },
+    title: { fontSize: 36, fontFamily: 'PottaOne-Regular', color: Colors.lightYellowCream, textAlign: 'center', marginVertical: 20 },
+    loadingText: { marginTop: 20, fontSize: 18, fontFamily: 'Inter-Variable', color: Colors.white },
+    errorText: { fontSize: 18, fontFamily: 'Inter-Variable', color: Colors.lightRedSalmon, textAlign: 'center', marginBottom: 20 },
+    emptyText: { fontSize: 18, fontFamily: 'Inter-Variable', color: Colors.white, textAlign: 'center' },
     sortContainer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 15 },
-    sortLabel: { fontSize: 16, marginRight: 10, color: '#E0BBE4' },
+    sortLabel: { fontSize: 16, marginRight: 10, color: Colors.lightPurple },
     sortButton: { paddingVertical: 8, paddingHorizontal: 15, borderRadius: 20, marginHorizontal: 5, backgroundColor: 'rgba(255, 255, 255, 0.2)' },
-    sortButtonActive: { backgroundColor: '#FFFFFF' },
-    sortButtonText: { color: '#FFFFFF', fontFamily: 'Inter-Bold' },
-    sortButtonTextActive: { color: '#4B0082' },
+    sortButtonActive: { backgroundColor: Colors.white },
+    sortButtonText: { color: Colors.white, fontFamily: 'Inter-Bold' },
+    sortButtonTextActive: { color: Colors.indigo },
     flatListContent: { alignItems: 'center' },
     designCard: { margin: 5, borderRadius: 15, overflow: 'hidden', backgroundColor: 'rgba(255, 255, 255, 0.1)', borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.2)' },
     designImage: { width: (width / 2) - 20, height: (width / 2) - 20 },
@@ -185,9 +186,9 @@ const styles = StyleSheet.create({
     fullScreenModalContainer: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.9)', justifyContent: 'center', alignItems: 'center' },
     fullScreenImage: { width: '95%', height: '80%' },
     closeButton: { position: 'absolute', top: 50, right: 20, backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 20, width: 40, height: 40, justifyContent: 'center', alignItems: 'center' },
-    closeButtonText: { color: 'white', fontSize: 18, fontFamily: 'Inter-Bold' },
+    closeButtonText: { color: Colors.white, fontSize: 18, fontFamily: 'Inter-Bold' },
     button: { backgroundColor: 'rgba(255, 255, 255, 0.9)', paddingVertical: 15, paddingHorizontal: 40, borderRadius: 30, alignSelf: 'center', marginTop: 20 },
-    buttonText: { fontSize: 18, fontFamily: 'Inter-Bold', color: '#4B0082' },
+    buttonText: { fontSize: 18, fontFamily: 'Inter-Bold', color: Colors.darkPinkPurple },
 });
 
 export default MyDesignsScreen;

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Alert, ImageBackground, TouchableOpacity } from
 import { TextInput } from 'react-native-paper';
 import { auth } from '../lib/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { Colors } from '../lib/colors';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -41,7 +42,7 @@ const LoginScreen = ({ navigation }) => {
             style={styles.input}
             keyboardType="email-address"
             autoCapitalize="none"
-            theme={{ colors: { primary: '#FFF', text: '#FFF', placeholder: '#DDD' } }}
+            theme={{ colors: { primary: Colors.white, text: Colors.white, placeholder: Colors.lightGray2 } }}
             testID="email-input"
           />
           <TextInput
@@ -51,7 +52,7 @@ const LoginScreen = ({ navigation }) => {
             mode="outlined"
             secureTextEntry
             style={styles.input}
-            theme={{ colors: { primary: '#FFF', text: '#FFF', placeholder: '#DDD' } }}
+            theme={{ colors: { primary: Colors.white, text: Colors.white, placeholder: Colors.lightGray2 } }}
             testID="password-input"
           />
           <TouchableOpacity style={styles.button} onPress={handleAuth}>
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 48,
     fontFamily: 'PottaOne-Regular',
-    color: '#FFFFFF',
+    color: Colors.lightYellowCream,
     marginBottom: 30,
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: { width: -1, height: 1 },
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     fontFamily: 'Inter-Bold',
-    color: '#4B0082',
+    color: '#6d435a',
   },
   toggleText: {
     color: '#FFFFFF',
