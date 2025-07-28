@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../lib/colors';
 
 interface GlassButtonProps {
   onPress: () => void;
@@ -23,7 +24,7 @@ const GlassButton: React.FC<GlassButtonProps> = ({ onPress, title, disabled, loa
         style={styles.gradientBackground}
       >
         {loading ? (
-          <ActivityIndicator color="#4B0082" />
+          <ActivityIndicator color={Colors.indigo} />
         ) : (
           <Text style={styles.buttonText}>{title}</Text>
         )}
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     fontFamily: 'Inter-Bold',
-    color: '#4B0082',
+    color: Colors.indigo,
   },
 });
 

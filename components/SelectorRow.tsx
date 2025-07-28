@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StyleProp, ViewStyle, LayoutChangeEvent, Image } from 'react-native';
 import { SvgProps } from 'react-native-svg';
+import { Colors } from '../lib/colors';
 
 export interface SelectorOption {
   value: string;
@@ -59,7 +60,7 @@ const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, 
             optionBorderWidth = 1; // Default border width for selected options
           }
 
-          const optionTextColor = isSelectedAndColorPalette ? (isColorLight(baseColor) ? '#000000' : '#FFFFFF') : (selectedValue === value ? styles.selectedOptionText.color : styles.optionText.color);
+          const optionTextColor = isSelectedAndColorPalette ? (isColorLight(baseColor) ? Colors.black : Colors.white) : (selectedValue === value ? styles.selectedOptionText.color : styles.optionText.color);
 
           return (
             <TouchableOpacity
@@ -69,6 +70,7 @@ const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, 
                 { backgroundColor: optionBackgroundColor, borderColor: optionBorderColor, borderWidth: optionBorderWidth },
                 (title === "Nail Length" || title === "Nail Shape" || title === "Nail Style" || title === "Color Palette") && styles.lengthOption,
                 title === "Color Palette" && value !== "Select" && !isBaseColorSelected && styles.colorSchemeDisabledOption,
+                isActive ? styles.activeOptionShadow : styles.inactiveOptionShadow,
               ]}
               onPress={() => onSelect(value)}
               disabled={title === "Color Palette" && value !== "Select" && !isBaseColorSelected}
@@ -107,7 +109,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontFamily: 'Inter-Bold',
-    color: '#C1B8C5',
+    color: Colors.lightGrayPurple,
     marginBottom: 10,
   },
   optionsContainer: {
@@ -116,19 +118,30 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   option: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(119, 105, 121, 1)',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 20,
     margin: 5,
-    borderWidth: 1,
-    borderColor: '#6d435a',
+    borderWidth: 0,
+    borderColor: Colors.darkPinkPurple,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  activeOptionShadow: {
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  inactiveOptionShadow: {
+    shadowOpacity: 0,
+    elevation: 0,
+  },
   selectedOption: {
-    backgroundColor: '#EFC9DA',
-    borderColor: '#EFC9DA',
+    backgroundColor: Colors.lightPink,
+    borderColor: Colors.lightPink,
   },
   optionText: {
     color: '#6d435a',

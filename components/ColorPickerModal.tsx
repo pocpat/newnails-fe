@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import ColorPicker from 'react-native-wheel-color-picker';
+import { Colors } from '../lib/colors';
 
 interface ColorPickerModalProps {
   isVisible: boolean;
@@ -9,7 +10,7 @@ interface ColorPickerModalProps {
 }
 
 const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ isVisible, onSelectColor, onClose }) => {
-  const [currentColor, setCurrentColor] = useState('#FFFFFF');
+  const [currentColor, setCurrentColor] = useState(Colors.white);
 
   const handleColorChange = (color: string) => {
     setCurrentColor(color);
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -90,14 +91,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    backgroundColor: '#2196F3',
+    backgroundColor: Colors.blue,
     marginHorizontal: 10,
   },
   cancelButton: {
-    backgroundColor: '#f44336',
+    backgroundColor: Colors.red,
   },
   buttonText: {
-    color: 'white',
+    color: Colors.white,
     fontWeight: 'bold',
     textAlign: 'center',
   },

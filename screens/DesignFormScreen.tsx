@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Text, ScrollView, ImageBackground, ActivityIndicator, Dimensions } from 'react-native';
 import ThreeDButton from '../components/ThreeDButton';
+import { Colors } from '../lib/colors';
 
 import SelectorRow, { SelectorOption } from '../components/SelectorRow';
 import { generateDesigns } from '../lib/api';
@@ -221,16 +222,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontFamily: 'PottaOne-Regular',
-    color: '#F5E9D3',
+    color: Colors.lightYellowCream,
     textAlign: 'center',
     marginBottom: 30,
   },
   activeSection: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(97, 92, 98, 0.5)',
     borderRadius: 10,
     marginBottom: 20,
   },
   inactiveSection: {
+    backgroundColor: Colors.lightDustyBroun,
     opacity: 0.5,
   },
   

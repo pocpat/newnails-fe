@@ -14,6 +14,7 @@ import {
 
 import { Card, IconButton } from 'react-native-paper';
 import * as api from '../lib/api';
+import { Colors } from '../lib/colors';
 
 const IMAGE_GENERATION_MODELS = [
   'stabilityai/sdxl-turbo:free',
@@ -105,14 +106,14 @@ const ResultsScreen = ({ route, navigation }) => {
       <Card.Actions style={styles.cardActions}>
         <IconButton
           icon={item.saved ? "check-circle" : "content-save-outline"}
-          iconColor={item.saved ? "#4CAF50" : "#2EC4B6"}
+          iconColor={item.saved ? Colors.green : Colors.teal}
           onPress={() => handleSaveDesign(item)}
           disabled={item.saved}
           size={24}
         />
         <IconButton
           icon="fullscreen"
-          iconColor="#FFFFFF"
+          iconColor={Colors.white}
           onPress={() => setFullScreenImage(item.url)}
           size={24}
         />
@@ -124,7 +125,7 @@ const ResultsScreen = ({ route, navigation }) => {
     return (
       <ImageBackground source={require('../assets/images/bg1.png')} style={styles.background}>
           <View style={styles.centeredContainer}>
-            <ActivityIndicator size="large" color="#FFFFFF" />
+            <ActivityIndicator size="large" color={Colors.white} />
             <Text style={styles.loadingText}>Generating your unique designs...</Text>
           </View>
       </ImageBackground>
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontFamily: 'PottaOne-Regular',
-    color: '#F5E9D3',
+    color: Colors.lightYellowCream,
     textAlign: 'center',
     marginVertical: 20,
   },
@@ -204,12 +205,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 18,
     fontFamily: 'Inter-Variable',
-    color: '#FFFFFF',
+    color: Colors.white,
   },
   errorText: {
     fontSize: 18,
     fontFamily: 'Inter-Variable',
-    color: '#FF6B6B',
+    color: Colors.lightRedSalmon,
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -269,7 +270,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     fontFamily: 'Inter-Bold',
-    color: '#6d435a',
+    color: Colors.darkPinkPurple,
   },
 });
 

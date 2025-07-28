@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, View } from 'react-native';
+import { Colors } from '../lib/colors';
 
 interface ThreeDButtonProps {
   onPress: () => void;
@@ -17,7 +18,7 @@ const ThreeDButton: React.FC<ThreeDButtonProps> = ({ onPress, title, disabled, l
     >
       <View style={styles.buttonInner}>
         {loading ? (
-          <ActivityIndicator color="#4B0082" />
+          <ActivityIndicator color={Colors.indigo} />
         ) : (
           <Text style={styles.buttonText}>{title}</Text>
         )}
@@ -31,8 +32,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 30,
     borderRadius: 30,
-    backgroundColor: '#E0E0E0', // Base color for the button
-    shadowColor: '#A3A3A3', // Darker shadow for depth
+    backgroundColor: Colors.lightGray, // Base color for the button
+    shadowColor: Colors.mediumGray, // Darker shadow for depth
     shadowOffset: { width: 6, height: 6 },
     shadowOpacity: 1,
     shadowRadius: 10,
@@ -45,8 +46,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 30,
-    backgroundColor: '#E0E0E0', // Inner surface color
-    shadowColor: '#FFFFFF', // Lighter shadow for highlight
+    backgroundColor: Colors.lightGray, // Inner surface color
+    shadowColor: Colors.white, // Lighter shadow for highlight
     shadowOffset: { width: -6, height: -6 },
     shadowOpacity: 1,
     shadowRadius: 10,
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     fontFamily: 'Inter-Bold',
-    color: '#4B0082',
+    color: Colors.indigo,
   },
 });
 

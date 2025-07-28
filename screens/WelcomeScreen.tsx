@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useAuth } from '../lib/auth';
+import { Colors } from '../lib/colors';
 
 const WelcomeScreen = ({ navigation }) => {
   const { user } = useAuth();
@@ -19,8 +20,8 @@ const WelcomeScreen = ({ navigation }) => {
           <Button
             mode="contained"
             onPress={() => navigation.navigate('DesignForm')}
-            labelStyle={{ fontFamily: 'Inter-Bold' }}
-            buttonColor="#ab8a98"
+            labelStyle={{ fontFamily: 'Inter-Bold', color: Colors.lightPink }}
+            buttonColor={Colors.darkPinkPurple}
           >
             Press to start
           </Button>
@@ -28,8 +29,8 @@ const WelcomeScreen = ({ navigation }) => {
           <Button
             mode="contained"
             onPress={() => navigation.navigate('Login')}
-            labelStyle={{ fontFamily: 'Inter-Bold' }}
-            buttonColor="#ab8a98"
+            labelStyle={{ fontFamily: 'Inter-Bold', color: Colors.lightPink }}
+            buttonColor={Colors.darkPinkPurple}
           >
             Login / Sign Up
           </Button>
@@ -56,14 +57,14 @@ const styles = StyleSheet.create({
     fontSize: 44,
     marginBottom: 10, // Reduced margin
     fontFamily: 'PottaOne-Regular',
-    color: '#F5E9D3',
+    color: Colors.lightYellowCream,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 18,
     fontFamily: 'Inter-Variable',
     marginBottom: 20, // Added margin
-    color: '#F5E9D3',
+    color: Colors.lightYellowCream,
     textAlign: 'center',
   },
   heroImage: {
