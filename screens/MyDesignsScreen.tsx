@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
     container: { flex: 1, padding: 10 },
     centeredContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    title: { fontSize: 36, fontFamily: 'PottaOne-Regular', color: '#FFFFFF', textAlign: 'center', marginVertical: 20 },
+    title: { fontSize: 36, fontFamily: 'PottaOne-Regular', color: '#F5E9D3', textAlign: 'center', marginVertical: 20 },
     loadingText: { marginTop: 20, fontSize: 18, fontFamily: 'Inter-Variable', color: '#FFFFFF' },
     errorText: { fontSize: 18, fontFamily: 'Inter-Variable', color: '#FF6B6B', textAlign: 'center', marginBottom: 20 },
     emptyText: { fontSize: 18, fontFamily: 'Inter-Variable', color: '#FFFFFF', textAlign: 'center' },
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     closeButton: { position: 'absolute', top: 50, right: 20, backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 20, width: 40, height: 40, justifyContent: 'center', alignItems: 'center' },
     closeButtonText: { color: 'white', fontSize: 18, fontFamily: 'Inter-Bold' },
     button: { backgroundColor: 'rgba(255, 255, 255, 0.9)', paddingVertical: 15, paddingHorizontal: 40, borderRadius: 30, alignSelf: 'center', marginTop: 20 },
-    buttonText: { fontSize: 18, fontFamily: 'Inter-Bold', color: '#4B0082' },
+    buttonText: { fontSize: 18, fontFamily: 'Inter-Bold', color: '#6d435a' },
 });
 
 export default MyDesignsScreen;

@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 48,
     fontFamily: 'PottaOne-Regular',
-    color: '#FFFFFF',
+    color: '#F5E9D3',
     marginBottom: 30,
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: { width: -1, height: 1 },
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     fontFamily: 'Inter-Bold',
-    color: '#4B0082',
+    color: '#6d435a',
   },
   toggleText: {
     color: '#FFFFFF',

@@ -91,6 +91,7 @@ const DesignFormScreen = ({ navigation, route }) => {
   const [selectedColorConfig, setSelectedColorConfig] = useState(null);
   const [selectedBaseColor, setSelectedBaseColor] = useState(null); // New state for custom base color
   const [showColorPicker, setShowColorPicker] = useState(false); // State to control modal visibility
+  const [isBaseColorSelected, setIsBaseColorSelected] = useState(false); // New state to track if base color is selected
   const [loading, setLoading] = useState(false);
   const [activeSection, setActiveSection] = useState('length');
 
@@ -126,6 +127,7 @@ const DesignFormScreen = ({ navigation, route }) => {
     setSelectedBaseColor(hex);
     setSelectedColorConfig("Select"); // Set the color config to "Select" once a color is picked
     setShowColorPicker(false);
+    setIsBaseColorSelected(true); // Mark base color as selected
   };
 
   const handleSelect = (setter, value, nextSection) => {
@@ -133,6 +135,13 @@ const DesignFormScreen = ({ navigation, route }) => {
       setShowColorPicker(true);
       return;
     }
+
+    // This check should be in SelectorRow, not here.
+    // if (title === "Color Palette" && value !== "Select" && !isBaseColorSelected) {
+    //   // Prevent selection of color schemes if base color is not yet selected
+    //   return;
+    // }
+
     setter(value);
     setActiveSection(nextSection);
 
@@ -172,10 +181,10 @@ const DesignFormScreen = ({ navigation, route }) => {
           <ScrollView ref={scrollViewRef} contentContainerStyle={styles.scrollViewContainer}>
             <Text style={styles.title}>Create Your Masterpiece</Text>
 
-            <SelectorRow title="Nail Length" options={lengthOptions} onSelect={(value) => handleSelect(setSelectedLength, value, 'shape')} selectedValue={selectedLength} style={activeSection === 'length' ? styles.activeSection : styles.inactiveSection} />
-            <SelectorRow title="Nail Shape" options={shapeOptions} onSelect={(value) => handleSelect(setSelectedShape, value, 'style')} selectedValue={selectedShape} style={activeSection === 'shape' ? styles.activeSection : styles.inactiveSection} />
-            <SelectorRow title="Nail Style" options={styleOptions} onSelect={(value) => handleSelect(setSelectedStyle, value, 'color')} selectedValue={selectedStyle} style={activeSection === 'style' ? styles.activeSection : styles.inactiveSection} />
-            <SelectorRow title="Color Palette" options={colorConfigOptions} onSelect={(value) => handleSelect(setSelectedColorConfig, value, 'done')} selectedValue={selectedColorConfig} style={activeSection === 'color' ? styles.activeSection : styles.inactiveSection} baseColor={selectedBaseColor} />
+            <SelectorRow title="Nail Length" options={lengthOptions} onSelect={(value) => handleSelect(setSelectedLength, value, 'shape')} selectedValue={selectedLength} style={activeSection === 'length' ? styles.activeSection : styles.inactiveSection} isActive={activeSection === 'length'} />
+            <SelectorRow title="Nail Shape" options={shapeOptions} onSelect={(value) => handleSelect(setSelectedShape, value, 'style')} selectedValue={selectedShape} style={activeSection === 'shape' ? styles.activeSection : styles.inactiveSection} isActive={activeSection === 'shape'} />
+            <SelectorRow title="Nail Style" options={styleOptions} onSelect={(value) => handleSelect(setSelectedStyle, value, 'color')} selectedValue={selectedStyle} style={activeSection === 'style' ? styles.activeSection : styles.inactiveSection} isActive={activeSection === 'style'} />
+            <SelectorRow title="Color Palette" options={colorConfigOptions} onSelect={(value) => handleSelect(setSelectedColorConfig, value, 'done')} selectedValue={selectedColorConfig} style={activeSection === 'color' ? styles.activeSection : styles.inactiveSection} baseColor={selectedBaseColor} isBaseColorSelected={isBaseColorSelected} isActive={activeSection === 'color'} />
 
             {allOptionsSelected && (
               <ThreeDButton
@@ -212,7 +221,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontFamily: 'PottaOne-Regular',
-    color: '#FFFFFF',
+    color: '#F5E9D3',
     textAlign: 'center',
     marginBottom: 30,
   },

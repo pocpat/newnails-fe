@@ -15,9 +15,11 @@ interface SelectorRowProps {
   style?: StyleProp<ViewStyle>;
   onLayout?: (event: LayoutChangeEvent) => void;
   baseColor?: string | null; // New prop for the base color
+  isBaseColorSelected?: boolean; // New prop to indicate if base color is selected
+  isActive?: boolean; // New prop to indicate if the row is active
 }
 
-const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, onSelect, selectedValue, style, onLayout, baseColor }, ref) => {
+const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, onSelect, selectedValue, style, onLayout, baseColor, isBaseColorSelected, isActive }, ref) => {
   // Helper function to determine if a color is light or dark
   const isColorLight = (hexColor: string) => {
     const r = parseInt(hexColor.substring(1, 3), 16);
@@ -38,7 +40,25 @@ const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, 
 
           const isSelectedAndColorPalette = selectedValue === value && title === "Color Palette" && value === "Select" && baseColor;
           const optionBackgroundColor = isSelectedAndColorPalette ? baseColor : (selectedValue === value ? styles.selectedOption.backgroundColor : styles.option.backgroundColor);
-          const optionBorderColor = isSelectedAndColorPalette ? baseColor : (selectedValue === value ? styles.selectedOption.borderColor : styles.option.borderColor);
+          let optionBorderColor = styles.option.borderColor;
+          let optionBorderWidth = styles.option.borderWidth;
+
+          if (title === "Color Palette" && value === "Select") {
+            if (baseColor) {
+              // If base color is selected, border should match background (disappear)
+              optionBorderColor = baseColor;
+              optionBorderWidth = 1; // Reset to default or hide
+            } else {
+              // If no base color yet, but it's the "Select" button, show a distinct border
+              optionBorderColor = '#FFFFFF'; // White border for visibility
+              optionBorderWidth = 3; // Make border wider
+            }
+          } else if (selectedValue === value) {
+            // For other selected options, use the selectedOption border color
+            optionBorderColor = styles.selectedOption.borderColor;
+            optionBorderWidth = 1; // Default border width for selected options
+          }
+
           const optionTextColor = isSelectedAndColorPalette ? (isColorLight(baseColor) ? '#000000' : '#FFFFFF') : (selectedValue === value ? styles.selectedOptionText.color : styles.optionText.color);
 
           return (
@@ -46,15 +66,17 @@ const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, 
               key={value}
               style={[
                 styles.option,
-                { backgroundColor: optionBackgroundColor, borderColor: optionBorderColor },
+                { backgroundColor: optionBackgroundColor, borderColor: optionBorderColor, borderWidth: optionBorderWidth },
                 (title === "Nail Length" || title === "Nail Shape" || title === "Nail Style" || title === "Color Palette") && styles.lengthOption,
+                title === "Color Palette" && value !== "Select" && !isBaseColorSelected && styles.colorSchemeDisabledOption,
               ]}
               onPress={() => onSelect(value)}
+              disabled={title === "Color Palette" && value !== "Select" && !isBaseColorSelected}
             >
               {IconComponent ? (
                 <>
                   <View style={styles.optionIcon}>
-                    <IconComponent width="100%" height="100%" />
+                    <IconComponent width="100%" height="100%" opacity={!isActive ? 0.3 : (title === "Color Palette" && value !== "Select" && !isBaseColorSelected ? 0.3 : 1)} />
                   </View>
                   <Text style={[styles.optionText, { color: optionTextColor }]}>
                     {value}
@@ -85,7 +107,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontFamily: 'Inter-Bold',
-    color: '#FFFFFF',
+    color: '#C1B8C5',
     marginBottom: 10,
   },
   optionsContainer: {
@@ -94,27 +116,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   option: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'transparent',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 20,
     margin: 5,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: '#6d435a',
     justifyContent: 'center',
     alignItems: 'center',
   },
   selectedOption: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#FFFFFF',
+    backgroundColor: '#EFC9DA',
+    borderColor: '#EFC9DA',
   },
   optionText: {
-    color: '#FFFFFF',
+    color: '#6d435a',
     fontFamily: 'Inter-Variable',
     fontSize: 8,
   },
   selectedOptionText: {
-    color: '#4B0082',
+    color: '#2EC4B6',
     fontFamily: 'Inter-Bold',
   },
   lengthOption: {
@@ -130,6 +152,10 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     // Removed marginBottom as justify-content will handle spacing
+  },
+  colorSchemeDisabledOption: {
+    opacity: 0.8, // Brighter opacity for disabled color scheme options
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },
   // optionContent is no longer used, but can be kept for future use.
   optionContent: {

@@ -36,7 +36,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton, onTryAgainP
   return (
     <Appbar.Header style={styles.header}>
       <Appbar.Action
-        icon={() => <SvgXml xml={logoXml} width="24" height="24" fill="#ab8a98" />}
+        icon={() => <SvgXml xml={logoXml} width="24" height="24" fill="#6d435a" />}
         onPress={openMenu}
       />
       {showTryAgainButton ? (
@@ -51,7 +51,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton, onTryAgainP
       <Menu
         visible={visible}
         onDismiss={closeMenu}
-        anchor={<Appbar.Action icon="dots-vertical" color="#ab8a98" onPress={openMenu} />}
+        anchor={<Appbar.Action icon="dots-vertical" color="#6d435a" onPress={openMenu} />}
       >
         {user ? (
           <>
@@ -98,12 +98,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonLabel: {
-    color: 'rgba(0, 0, 0, 0.3)',
+    color: '#6d435a',
     fontFamily: 'Inter-Bold',
     fontSize: 12, // Smaller font size for the button label
   },
   tryAgainButton: {
-    backgroundColor: '#ab8a98',
+    backgroundColor: '#2EC4B6',
     borderRadius: 20,
     paddingHorizontal: 10, // Reduced horizontal padding
     paddingVertical: 3, // Reduced vertical padding

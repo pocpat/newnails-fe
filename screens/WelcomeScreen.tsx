@@ -56,14 +56,14 @@ const styles = StyleSheet.create({
     fontSize: 44,
     marginBottom: 10, // Reduced margin
     fontFamily: 'PottaOne-Regular',
-    color: '#FFFFFF',
+    color: '#F5E9D3',
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 18,
     fontFamily: 'Inter-Variable',
     marginBottom: 20, // Added margin
-    color: '#FFFFFF',
+    color: '#F5E9D3',
     textAlign: 'center',
   },
   heroImage: {

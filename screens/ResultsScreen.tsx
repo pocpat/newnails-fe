@@ -105,7 +105,7 @@ const ResultsScreen = ({ route, navigation }) => {
       <Card.Actions style={styles.cardActions}>
         <IconButton
           icon={item.saved ? "check-circle" : "content-save-outline"}
-          iconColor={item.saved ? "#4CAF50" : "#FFFFFF"}
+          iconColor={item.saved ? "#4CAF50" : "#2EC4B6"}
           onPress={() => handleSaveDesign(item)}
           disabled={item.saved}
           size={24}
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontFamily: 'PottaOne-Regular',
-    color: '#FFFFFF',
+    color: '#F5E9D3',
     textAlign: 'center',
     marginVertical: 20,
   },
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     fontFamily: 'Inter-Bold',
-    color: '#4B0082',
+    color: '#6d435a',
   },
 });
 
