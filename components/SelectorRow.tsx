@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StyleProp, ViewStyle, LayoutChangeEvent, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, StyleProp, ViewStyle, LayoutChangeEvent, Image, ImageSourcePropType } from 'react-native';
 import { SvgProps } from 'react-native-svg';
 import { Colors } from '../lib/colors';
 
 export interface SelectorOption {
   value: string;
-  icon: React.FC<SvgProps>;
+  icon: React.FC<SvgProps> | ImageSourcePropType;
 }
 
 interface SelectorRowProps {
@@ -15,19 +15,18 @@ interface SelectorRowProps {
   selectedValue: string | null;
   style?: StyleProp<ViewStyle>;
   onLayout?: (event: LayoutChangeEvent) => void;
-  baseColor?: string | null; // New prop for the base color
-  isBaseColorSelected?: boolean; // New prop to indicate if base color is selected
-  isActive?: boolean; // New prop to indicate if the row is active
+  baseColor?: string | null;
+  isBaseColorSelected?: boolean;
+  isActive?: boolean;
 }
 
-const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, onSelect, selectedValue, style, onLayout, baseColor, isBaseColorSelected, isActive }, ref) => {
-  // Helper function to determine if a color is light or dark
+const SelectorRow = React.memo(React.forwardRef<View, SelectorRowProps>(({ title, options, onSelect, selectedValue, style, onLayout, baseColor, isBaseColorSelected, isActive }, ref) => {
   const isColorLight = (hexColor: string) => {
     const r = parseInt(hexColor.substring(1, 3), 16);
     const g = parseInt(hexColor.substring(3, 5), 16);
     const b = parseInt(hexColor.substring(5, 7), 16);
     const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-    return brightness > 155; // Adjust threshold as needed
+    return brightness > 155;
   };
 
   return (
@@ -37,7 +36,7 @@ const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, 
         {options.map((option) => {
           const isObject = typeof option === 'object' && option !== null;
           const value = isObject ? (option as SelectorOption).value : (option as string);
-          const IconComponent = isObject ? (option as SelectorOption).icon : undefined;
+          const Icon = isObject ? (option as SelectorOption).icon : undefined;
 
           const isSelectedAndColorPalette = selectedValue === value && title === "Color Palette" && value === "Select" && baseColor;
           const optionBackgroundColor = isSelectedAndColorPalette ? baseColor : (selectedValue === value ? styles.selectedOption.backgroundColor : styles.option.backgroundColor);
@@ -46,18 +45,15 @@ const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, 
 
           if (title === "Color Palette" && value === "Select") {
             if (baseColor) {
-              // If base color is selected, border should match background (disappear)
               optionBorderColor = baseColor;
-              optionBorderWidth = 1; // Reset to default or hide
+              optionBorderWidth = 1;
             } else {
-              // If no base color yet, but it's the "Select" button, show a distinct border
-              optionBorderColor = '#FFFFFF'; // White border for visibility
-              optionBorderWidth = 3; // Make border wider
+              optionBorderColor = '#FFFFFF';
+              optionBorderWidth = 3;
             }
           } else if (selectedValue === value) {
-            // For other selected options, use the selectedOption border color
             optionBorderColor = styles.selectedOption.borderColor;
-            optionBorderWidth = 1; // Default border width for selected options
+            optionBorderWidth = 1;
           }
 
           const optionTextColor = isSelectedAndColorPalette ? (isColorLight(baseColor) ? Colors.black : Colors.white) : (selectedValue === value ? styles.selectedOptionText.color : styles.optionText.color);
@@ -75,10 +71,14 @@ const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, 
               onPress={() => onSelect(value)}
               disabled={title === "Color Palette" && value !== "Select" && !isBaseColorSelected}
             >
-              {IconComponent ? (
+              {Icon ? (
                 <>
                   <View style={styles.optionIcon}>
-                    <IconComponent width="100%" height="100%" opacity={!isActive ? 0.3 : (title === "Color Palette" && value !== "Select" && !isBaseColorSelected ? 0.3 : 1)} />
+                    {typeof Icon === 'number' ? (
+                      <Image source={Icon} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
+                    ) : (
+                      <Icon width="100%" height="100%" opacity={!isActive ? 0.3 : (title === "Color Palette" && value !== "Select" && !isBaseColorSelected ? 0.3 : 1)} />
+                    )}
                   </View>
                   <Text style={[styles.optionText, { color: optionTextColor }]}>
                     {value}
@@ -100,7 +100,7 @@ const SelectorRow = React.forwardRef<View, SelectorRowProps>(({ title, options, 
       </View>
     </View>
   );
-});
+}));
 
 const styles = StyleSheet.create({
   container: {
@@ -156,21 +156,18 @@ const styles = StyleSheet.create({
     width: 80,
     height: 100,
     flexDirection: 'column',
-    // Switched to space-between to push icon up and text down
     justifyContent: 'space-between',
     paddingBottom: 10,
-    paddingTop: 10, // Added padding top for balance
+    paddingTop: 10,
   },
   optionIcon: {
     width: 60,
     height: 60,
-    // Removed marginBottom as justify-content will handle spacing
   },
   colorSchemeDisabledOption: {
-    opacity: 0.8, // Brighter opacity for disabled color scheme options
+    opacity: 0.8,
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },
-  // optionContent is no longer used, but can be kept for future use.
   optionContent: {
     alignItems: 'center',
   },

@@ -44,8 +44,7 @@ import StyleGeometricIcon from '../assets/images/style_geometric.svg';
 import StyleOmbreIcon from '../assets/images/style_ombre.svg';
 import StyleAbstractIcon from '../assets/images/style_abstract.svg';
 import StyleDotNailsIcon from '../assets/images/style_dots.svg';
-import StyleGlitterIcon from '../assets/images/style_glitter.svg'
-
+import StyleGlitterIcon from '../assets/images/style_glitter.png';
 
 
 
@@ -116,7 +115,7 @@ const DesignFormScreen = ({ navigation, route }) => {
       setSelectedBaseColor(null); // Clear selected base color
       setActiveSection('length');
       if (scrollViewRef.current) {
-        scrollViewRef.current.scrollTo({ y: 0, animated: false });
+        scrollViewRef.current.scrollTo({ y: 0, animated: true });
       }
       navigation.setParams({ clear: false });
     }
@@ -132,26 +131,26 @@ const DesignFormScreen = ({ navigation, route }) => {
   };
 
   const handleSelect = (setter, value, nextSection) => {
+    const startTime = Date.now();
+    console.log('handleSelect called');
     if (value === "Select") {
       setShowColorPicker(true);
       return;
     }
 
-    // This check should be in SelectorRow, not here.
-    // if (title === "Color Palette" && value !== "Select" && !isBaseColorSelected) {
-    //   // Prevent selection of color schemes if base color is not yet selected
-    //   return;
-    // }
-
     setter(value);
     setActiveSection(nextSection);
 
-    if (scrollViewRef.current) {
-      const targetOffset = sectionOffsets.current[nextSection];
-      if (typeof targetOffset === 'number') {
-        scrollViewRef.current.scrollTo({ y: targetOffset, animated: true });
+    setTimeout(() => {
+      if (scrollViewRef.current) {
+        const targetOffset = sectionOffsets.current[nextSection];
+        if (typeof targetOffset === 'number') {
+          scrollViewRef.current.scrollTo({ y: targetOffset, animated: true });
+        }
       }
-    }
+    }, 50);
+    const endTime = Date.now();
+    console.log(`handleSelect execution time: ${endTime - startTime}ms`);
   };
 
   const handleImpressMe = async () => {
