@@ -32,19 +32,16 @@ async function fetchWithAuth(url: string, options?: RequestInit) {
   return response.json();
 }
 
-export interface DesignParameters {
-  length: string;
-  shape: string;
-  style: string;
-  colorConfig: string;
-  baseColor: string | null;
+export async function generateDesigns(designOptions: {
+  prompt: string;
   model: string;
-}
-
-export async function generateDesigns(designParams: DesignParameters) {
+  width?: number;
+  height?: number;
+  num_images?: number;
+}) {
   return fetchWithAuth('/api/generate', {
     method: 'POST',
-    body: JSON.stringify(designParams),
+    body: JSON.stringify(designOptions),
   });
 }
 
