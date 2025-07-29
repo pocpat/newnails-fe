@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    color: Colors.lightPurple,
+    color: Colors.darkPinkPurple,
     fontFamily: 'PottaOne-Regular',
     fontSize: 24,
     textAlign: 'center',
