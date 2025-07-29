@@ -4,7 +4,8 @@ import ThreeDButton from '../components/ThreeDButton';
 import { Colors } from '../lib/colors';
 
 import SelectorRow, { SelectorOption } from '../components/SelectorRow';
-import { generateDesigns } from '../lib/api';
+import { API_BASE_URL } from '../lib/constants';
+import { auth } from '../lib/firebase';
 import ColorPickerModal from '../components/ColorPickerModal';
 import LengthShortIcon from '../assets/images/length_short.svg';
 import LengthMediumIcon from '../assets/images/length_medium.svg';
@@ -156,18 +157,37 @@ const DesignFormScreen = ({ navigation, route }) => {
   const handleImpressMe = async () => {
     setLoading(true);
     try {
+      const user = auth.currentUser;
+      let token = null;
+      if (user) {
+        token = await user.getIdToken(true);
+      }
 
-      const result = await generateDesigns({
-        length: selectedLength,
-        shape: selectedShape,
-        style: selectedStyle,
-        colorConfig: selectedColorConfig,
-        baseColor: selectedBaseColor,
-        model: "stabilityai/sdxl-turbo:free",
+      const response = await fetch(`${API_BASE_URL}/api/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+        },
+        body: JSON.stringify({
+          length: selectedLength,
+          shape: selectedShape,
+          style: selectedStyle,
+          colorConfig: selectedColorConfig,
+          baseColor: selectedBaseColor,
+          model: "stabilityai/sdxl-turbo:free",
+        }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Something went wrong');
+      }
+
+      const result = await response.json();
+
       setLoading(false);
-      navigation.navigate('Results', { generatedImages: result.generatedImages, length: selectedLength, shape: selectedShape, style: selectedStyle, colorConfig: selectedColorConfig, baseColor: selectedBaseColor });
+      navigation.navigate('Results', { generatedImages: result.imageUrls, length: selectedLength, shape: selectedShape, style: selectedStyle, colorConfig: selectedColorConfig, baseColor: selectedBaseColor });
     } catch (error) {
       setLoading(false);
       console.error("Error generating designs:", error);
