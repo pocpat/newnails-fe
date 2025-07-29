@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontFamily: 'Inter-Bold',
-    color: Colors.darkPinkPurple,
+    color: Colors.lightGrayPurple,
     marginBottom: 10,
   },
   optionsContainer: {
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
   },
   option: {
     backgroundColor: 'rgba(119, 105, 121, 1)',
+
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 20,
