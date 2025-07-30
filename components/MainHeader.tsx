@@ -48,7 +48,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton = false, onT
           </Button>
         </View>
       ) : (
-        <Appbar.Content title="Tipsy" titleStyle={styles.title} />
+        <Appbar.Content title="Dipsy" titleStyle={styles.title} />
       )}
 
       <Menu
@@ -60,7 +60,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton = false, onT
           <>
             <Menu.Item
               onPress={() => { navigation.navigate('MyDesigns'); closeMenu(); }}
-              title="My Designs"
+              title="My Library"
               titleStyle={styles.menuItem}
             />
             <Menu.Item

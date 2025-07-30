@@ -125,7 +125,7 @@ const MyDesignsScreen = ({ navigation }) => {
   return (
     <ImageBackground source={require('../assets/images/bg1.png')} style={styles.background}>
         <View style={styles.container}>
-          <Text style={styles.title}>My Saved Designs</Text>
+          <Text style={styles.title}>My Library</Text>
           <View style={styles.sortContainer}>
             <Text style={styles.sortLabel}>Sort by:</Text>
             <ToggleButton.Group

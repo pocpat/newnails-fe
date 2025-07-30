@@ -33,7 +33,7 @@ const LoginScreen = ({ navigation }) => {
       style={styles.background}
     >
         <View style={styles.container}>
-          <Text style={styles.title}>{isLogin ? 'Welcome Back' : 'Join Tipsy'}</Text>
+          <Text style={styles.title}>{isLogin ? 'Welcome Back' : 'Join Dipsy'}</Text>
           <TextInput
             label="Email"
             value={email}

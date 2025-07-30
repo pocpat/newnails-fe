@@ -13,7 +13,7 @@ const WelcomeScreen = ({ navigation }) => {
       style={styles.background}
     >
       <View style={styles.container}>
-        <Text style={styles.title}>TiPSY</Text>
+        <Text style={styles.title}>DiPSY</Text>
         <Text style={styles.subtitle}>Your AI assistant</Text>
         <Image source={require('../assets/images/hero-img.png')} style={styles.heroImage} />
         {user ? (
