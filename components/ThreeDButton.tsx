@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 30,
     borderRadius: 30,
-    backgroundColor: Colors.lightGray, // Base color for the button
+    backgroundColor: Colors.solidTeal, // Base color for the button
     shadowColor: Colors.mediumGray, // Darker shadow for depth
     shadowOffset: { width: 6, height: 6 },
     shadowOpacity: 1,
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 30,
-    backgroundColor: Colors.lightGray, // Inner surface color
+    backgroundColor: Colors.solidTeal, // Inner surface color
     shadowColor: Colors.white, // Lighter shadow for highlight
     shadowOffset: { width: -6, height: -6 },
     shadowOpacity: 1,

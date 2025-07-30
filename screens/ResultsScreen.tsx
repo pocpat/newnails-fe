@@ -113,9 +113,10 @@ const ResultsScreen = ({ route, navigation }) => {
         />
         <IconButton
           icon="fullscreen"
-          iconColor={Colors.white}
+          iconColor={Colors.teal}
           onPress={() => setFullScreenImage(item.url)}
           size={24}
+          style={{ backgroundColor: 'transparent' }}
         />
       </Card.Actions>
     </Card>
@@ -201,6 +202,9 @@ const styles = StyleSheet.create({
     color: Colors.lightYellowCream,
     textAlign: 'center',
     marginVertical: 20,
+        textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 8,
   },
   loadingText: {
     marginTop: 20,

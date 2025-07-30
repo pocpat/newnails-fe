@@ -203,15 +203,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontFamily: 'PottaOne-Regular',
-    color: Colors.white,
+    color: Colors.lightYellowCream,
     textAlign: 'center',
     marginBottom: 30,
     textShadowColor: 'rgba(0, 0, 0, 0.2)',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 8,
   },
-  activeSection: { backgroundColor: 'rgba(98, 97, 92, 0.5)', borderRadius: 10, marginBottom: 20 },
-  inactiveSection: { backgroundColor: Colors.lightDustyBroun, opacity: 0.5 },
+  activeSection: { backgroundColor: Colors.lightGrayPurple, borderRadius: 10, marginBottom: 20 },
+  inactiveSection: { backgroundColor: Colors.lightDustyBroun, opacity: 0.25 },
   spacer: { height: Dimensions.get('window').height / 2 },
 });
 

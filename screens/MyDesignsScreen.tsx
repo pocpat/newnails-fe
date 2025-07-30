@@ -106,8 +106,8 @@ const MyDesignsScreen = ({ navigation }) => {
       </TouchableOpacity>
       <Card.Actions style={styles.cardActions}>
         <IconButton
-          icon={item.isFavorite ? "star" : "star-outline"}
-          iconColor={item.isFavorite ? Colors.gold : Colors.white}
+          icon={item.isFavorite ? "heart" : "heart-outline"}
+          iconColor={Colors.teal}
           onPress={() => handleToggleFavorite(item.id)}
           size={24}
         />
@@ -116,6 +116,7 @@ const MyDesignsScreen = ({ navigation }) => {
           iconColor={Colors.lightRedSalmon}
           onPress={() => handleDeleteDesign(item.id)}
           size={24}
+          style={{ backgroundColor: 'transparent' }}
         />
       </Card.Actions>
     </Card>
@@ -132,7 +133,7 @@ const MyDesignsScreen = ({ navigation }) => {
               value={sortOrder}
             >
               <ToggleButton icon="clock-outline" value="recent" />
-              <ToggleButton icon="star" value="favorites" />
+              <ToggleButton icon="heart" value="favorites" />
             </ToggleButton.Group>
           </View>
           {sortedDesigns.length > 0 ? (
@@ -169,7 +170,9 @@ const styles = StyleSheet.create({
   },
     container: { flex: 1, padding: 10 },
     centeredContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    title: { fontSize: 36, fontFamily: 'PottaOne-Regular', color: Colors.lightYellowCream, textAlign: 'center', marginVertical: 20 },
+    title: { fontSize: 36, fontFamily: 'PottaOne-Regular', color: Colors.lightYellowCream,     textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 8,textAlign: 'center', marginVertical: 20 },
     loadingText: { marginTop: 20, fontSize: 18, fontFamily: 'Inter-Variable', color: Colors.white },
     errorText: { fontSize: 18, fontFamily: 'Inter-Variable', color: Colors.lightRedSalmon, textAlign: 'center', marginBottom: 20 },
     emptyText: { fontSize: 18, fontFamily: 'Inter-Variable', color: Colors.white, textAlign: 'center' },

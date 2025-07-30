@@ -38,7 +38,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton = false, onT
 
     <Appbar.Header style={styles.header}>
       <Appbar.Action
-        icon={() => <SvgXml xml={logoXml} width="24" height="24" fill={Colors.darkPinkPurple} />}
+        icon={() => <SvgXml xml={logoXml} width="24" height="24" fill={Colors.solidTeal} />}
         onPress={openMenu}
       />
       {showTryAgainButton ? (
@@ -54,7 +54,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton = false, onT
       <Menu
         visible={visible}
         onDismiss={closeMenu}
-        anchor={<Appbar.Action icon="dots-vertical" color={Colors.darkPinkPurple} onPress={openMenu} />}
+        anchor={<Appbar.Action icon="dots-vertical" color={Colors.solidTeal} onPress={openMenu} />}
       >
         {user ? (
           <>
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    color: Colors.darkPinkPurple,
+    color: Colors.solidTeal,
     fontFamily: 'PottaOne-Regular',
     fontSize: 24,
     textAlign: 'center',
@@ -106,14 +106,14 @@ const styles = StyleSheet.create({
     fontSize: 12, // Smaller font size for the button label
   },
   tryAgainButton: {
-    backgroundColor: Colors.teal,
+    backgroundColor: Colors.solidTeal,
     borderRadius: 20,
     paddingHorizontal: 10, // Reduced horizontal padding
     paddingVertical: 3, // Reduced vertical padding
   },
-  menuItem: {
+  menuItem: {            //3-dot-menu links
     fontFamily: 'Inter-Variable',
-    color: 'rgba(0, 0, 0, 0.3)',
+    color: 'rgba(0, 0, 0, 0.4)',
   },
 });
 

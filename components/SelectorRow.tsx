@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontFamily: 'Inter-Bold',
-    color: Colors.lightGrayPurple,
+    color: Colors.dustyBroun,
     marginBottom: 10,
   },
   optionsContainer: {
