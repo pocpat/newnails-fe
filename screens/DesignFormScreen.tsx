@@ -60,9 +60,9 @@ const colorConfigOptions: SelectorOption[] = [
   { value: "Select", icon: ColorBaseIcon },
   { value: "Mono", icon: ColorMonochromaticIcon },
   { value: "Analog", icon: ColorAnalogousIcon },
-  { value: "Complim", icon: ColorComplimentaryIcon },
-  { value: "Triad", icon: ColorTriadIcon },
-  { value: "Tetradic", icon: ColorTetradicIcon },
+  { value: "Contrast", icon: ColorComplimentaryIcon },
+  { value: "Balanced", icon: ColorTriadIcon },
+  { value: "Rich", icon: ColorTetradicIcon },
 ];
 
 
