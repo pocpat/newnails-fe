@@ -1,3 +1,4 @@
+// FIXED ResultsScreen.tsx
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -24,52 +25,84 @@ const IMAGE_GENERATION_MODELS = [
 ];
 
 const ResultsScreen = ({ route, navigation }) => {
-  const { length, shape, style, colorConfig } = route.params || {};
+  // CHANGE: Accept the new params structure
+  const { generatedImages, length, shape, style, color, baseColor } = route.params || {};
+  
   const [generatedDesigns, setGeneratedDesigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [fullScreenImage, setFullScreenImage] = useState(null);
 
   useEffect(() => {
-    const fetchDesigns = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+    // CHANGE: If we already have generatedImages, use them instead of generating new ones
+    if (generatedImages && generatedImages.length > 0) {
+      const formattedImages = generatedImages.map((url, index) => ({
+        id: `existing-${index}`,
+        url: url,
+        saved: false,
+      }));
+      setGeneratedDesigns(formattedImages);
+      setLoading(false);
+      return;
+    }
 
-        const prompt = `A ${length} ${shape} nail with ${style} design and ${colorConfig} color scheme.`;
-        const allGeneratedImages = [];
+    // CHANGE: Only generate if we don't have images but have the form data
+    if (length && shape && style) {
+      fetchDesigns();
+    } else {
+      setError("Missing design parameters");
+      setLoading(false);
+    }
+  }, [generatedImages, length, shape, style, color, baseColor]);
 
-        for (const model of IMAGE_GENERATION_MODELS) {
-          try {
-            const response = await api.generateDesigns({
-              prompt,
-              model,
-              num_images: 1,
-              width: 1024,
-              height: 1024,
+  const fetchDesigns = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // CHANGE: Use the new raw params format instead of prompt
+      const designOptions = {
+        length: length,
+        shape: shape,
+        style: style,
+        color: color, // This is the color config (Analog, etc.)
+        baseColor: baseColor, // This is the hex color
+      };
+
+      console.log("ResultsScreen: Sending design options:", designOptions);
+
+      const allGeneratedImages = [];
+
+      for (const model of IMAGE_GENERATION_MODELS) {
+        try {
+          // CHANGE: Send raw params instead of prompt
+          const response = await api.generateDesigns({
+            ...designOptions,
+            model: model,
+            num_images: 1,
+            width: 1024,
+            height: 1024,
+          });
+          
+          if (response.imageUrls && response.imageUrls.length > 0) {
+            allGeneratedImages.push({
+              id: `${model}-${allGeneratedImages.length}`,
+              url: response.imageUrls[0],
+              saved: false,
             });
-            if (response.imageUrls && response.imageUrls.length > 0) {
-              allGeneratedImages.push({
-                id: `${model}-${allGeneratedImages.length}`,
-                url: response.imageUrls[0],
-                saved: false,
-              });
-            }
-          } catch (modelError) {
-            console.error(`Error generating with model ${model}:`, modelError);
           }
+        } catch (modelError) {
+          console.error(`Error generating with model ${model}:`, modelError);
         }
-        setGeneratedDesigns(allGeneratedImages);
-      } catch (err) {
-        setError(`Failed to generate designs: ${err.message || 'Unknown error'}`);
-        console.error('Error generating designs:', err);
-      } finally {
-        setLoading(false);
       }
-    };
-
-    fetchDesigns();
-  }, [length, shape, style, colorConfig]);
+      setGeneratedDesigns(allGeneratedImages);
+    } catch (err) {
+      setError(`Failed to generate designs: ${err.message || 'Unknown error'}`);
+      console.error('Error generating designs:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSaveDesign = async (designToSave) => {
     setGeneratedDesigns(prevDesigns =>
@@ -79,8 +112,11 @@ const ResultsScreen = ({ route, navigation }) => {
     );
 
     try {
+      // CHANGE: Build a proper prompt for saving (this is just for the save record)
+      const savePrompt = `${length} ${shape} nails with ${style} style${color && color !== 'Pick a Base Color' ? ` in ${color} colors` : ''}${baseColor ? ` using ${baseColor} as base color` : ''}.`;
+      
       await api.saveDesign({
-        prompt: `A ${length} ${shape} nail with ${style} design and ${colorConfig} color scheme.`,
+        prompt: savePrompt,
         temporaryImageUrl: designToSave.url,
       });
     } catch (error) {
@@ -182,7 +218,7 @@ const ResultsScreen = ({ route, navigation }) => {
   );
 };
 
-
+// ... styles remain the same ...
 const styles = StyleSheet.create({
   background: { flex: 1 },
   overlay: { flex: 1 },
@@ -202,9 +238,9 @@ const styles = StyleSheet.create({
     color: Colors.lightYellowCream,
     textAlign: 'center',
     marginVertical: 20,
-        textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 8,
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 8,
   },
   loadingText: {
     marginTop: 20,

@@ -146,64 +146,122 @@ const DesignFormScreen = ({ navigation, route }) => {
 
 
 
-  const handleImpressMe = async () => {
-    if (!allOptionsSelected) {
-      Alert.alert("Please complete all selections before generating.");
-      return;
-    }
-    setLoading(true);
-    try {
-      // 1. Gather all the current state variables into a single object.
-      // This is the object that will be sent to the backend.
-      const designOptions = {
-        length: selectedLength,
-        shape: selectedShape,
-        style: selectedStyle,
-        color: selectedColorConfig, // Backend expects 'color' for the config
-        baseColor: selectedBaseColor,
-      };
+  // const handleImpressMe = async () => {
+  //   if (!allOptionsSelected) {
+  //     Alert.alert("Please complete all selections before generating.");
+  //     return;
+  //   }
+  //   setLoading(true);
+  //   try {
+  //     // 1. Gather all the current state variables into a single object.
+  //     // This is the object that will be sent to the backend.
+  //     const designOptions = {
+  //       length: selectedLength,
+  //       shape: selectedShape,
+  //       style: selectedStyle,
+  //       color: selectedColorConfig, // Backend expects 'color' for the config
+  //       baseColor: selectedBaseColor,
+  //     };
 
-      console.log("Sending these raw options for each model:", designOptions);
+  //     console.log("Sending these raw options for each model:", designOptions);
 
-      // 2. Map over the models and create an array of API call promises.
-      const imagePromises = IMAGE_GENERATION_MODELS.map(model => {
-        const payload = {
-          ...designOptions,
-          model: model, // Add the current model to the payload
-        };
-        // This is the correct call that sends all the raw data.
-        return generateDesigns(payload).catch(error => {
-          console.error(`Error generating with model ${model}:`, error);
-          return null; // Return null for failed requests to not crash Promise.all
-        });
-      });
+  //     // 2. Map over the models and create an array of API call promises.
+  //     const imagePromises = IMAGE_GENERATION_MODELS.map(model => {
+  //       const payload = {
+  //         ...designOptions,
+  //         model: model, // Add the current model to the payload
+  //       };
 
-      // 3. Execute all promises.
-      const results = await Promise.all(imagePromises);
 
-      // 4. Process the results.
-      const imageUrls = results.filter(r => r).flatMap(result => result.imageUrls);
-
-      if (imageUrls.length === 0) {
-        throw new Error("All image generation models failed. Please try again later.");
-      }
-
-      setLoading(false);
-      navigation.navigate('Results', {
-        generatedImages: imageUrls,
-      });
-
-    } catch (error: any) {
-      setLoading(false);
-      console.error("Fatal error in handleImpressMe:", error);
-      Alert.alert("Generation Failed", error.message);
-    }
-  };
+  // console.log("=== DEBUG: About to call generateDesigns ===");
+  // console.log("Payload being sent:", JSON.stringify(payload, null, 2));
+  // console.log("designOptions:", JSON.stringify(designOptions, null, 2));
+  // console.log("Model:", model);
+  // console.log("===========================================");
 
 
 
+  //       // This is the correct call that sends all the raw data.
+  //       return generateDesigns(payload).catch(error => {
+  //         console.error(`Error generating with model ${model}:`, error);
+  //         return null; // Return null for failed requests to not crash Promise.all
+  //       });
+  //     });
+
+  //     // 3. Execute all promises.
+  //     const results = await Promise.all(imagePromises);
+
+  //     // 4. Process the results.
+  //     const imageUrls = results.filter(r => r).flatMap(result => result.imageUrls);
+
+  //     if (imageUrls.length === 0) {
+  //       throw new Error("All image generation models failed. Please try again later.");
+  //     }
+
+  //     setLoading(false);
+  //     navigation.navigate('Results', {
+  //       generatedImages: imageUrls,
+  //     });
+
+  //   } catch (error: any) {
+  //     setLoading(false);
+  //     console.error("Fatal error in handleImpressMe:", error);
+  //     Alert.alert("Generation Failed", error.message);
+  //   }
+  // };
 
 
+
+
+// Replace your multiple requests with a single test request
+const handleImpressMe = async () => {
+  if (!allOptionsSelected) {
+    Alert.alert("Please complete all selections before generating.");
+    return;
+  }
+  setLoading(true);
+  try {
+    const designOptions = {
+      length: selectedLength,
+      shape: selectedShape,
+      style: selectedStyle,
+      color: selectedColorConfig,
+      baseColor: selectedBaseColor,
+    };
+
+    console.log("=== SINGLE REQUEST TEST ===");
+    console.log("Sending designOptions:", JSON.stringify(designOptions, null, 2));
+
+    // Test with just one model first
+    const testPayload = {
+      ...designOptions,
+      model: "stabilityai/sdxl-turbo:free",
+    };
+    
+    console.log("Final payload:", JSON.stringify(testPayload, null, 2));
+    
+    const result = await generateDesigns(testPayload);
+    console.log("Success! Result:", result);
+    
+    // If this works, then the issue is with Promise.all
+    setLoading(false);
+    // navigation.navigate('Results', { generatedImages: result.imageUrls });
+
+    navigation.navigate('Results', {
+  generatedImages: result.imageUrls, // The images you generated
+  // Also pass the raw params for the ResultsScreen to use if needed
+  length: selectedLength,
+  shape: selectedShape,
+  style: selectedStyle,
+  color: selectedColorConfig,
+  baseColor: selectedBaseColor,
+});
+  } catch (error: any) {
+    setLoading(false);
+    console.error("Single request error:", error);
+    Alert.alert("Generation Failed", error.message);
+  }
+};
 
 
 
