@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Text, ScrollView, ImageBackground, Dimensions } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, ImageBackground, Dimensions,Alert } from 'react-native';
 import ThreeDButton from '../components/ThreeDButton';
 import { Colors } from '../lib/colors';
 import SelectorRow, { SelectorOption } from '../components/SelectorRow';
@@ -30,6 +30,15 @@ import ColorAnalogousIcon from '../assets/images/color_analog.svg';
 import ColorComplimentaryIcon from '../assets/images/color_complim.svg';
 import ColorTriadIcon from '../assets/images/color_triad.svg';
 import ColorTetradicIcon from '../assets/images/color_tetra.svg';
+
+
+const IMAGE_GENERATION_MODELS = [
+  "stabilityai/sdxl-turbo:free",
+  "google/gemini-2.0-flash-exp:free",
+  "black-forest-labs/FLUX-1-schnell:free",
+  "HiDream-ai/HiDream-I1-Full:free",
+];
+
 
 
 // --- All your options arrays are correct ---
@@ -101,7 +110,6 @@ const DesignFormScreen = ({ navigation, route }) => {
     }
   }, [route.params?.clear]);
 
-  const allOptionsSelected = selectedLength && selectedShape && selectedStyle && selectedColorConfig && (selectedColorConfig !== "Select" || selectedBaseColor);
 
   const handleColorSelect = (hex: string) => {
     setSelectedBaseColor(hex);
@@ -131,38 +139,87 @@ const DesignFormScreen = ({ navigation, route }) => {
     console.log(`handleSelect execution time: ${endTime - startTime}ms`);
   };
 
+  const allOptionsSelected = selectedLength && selectedShape && selectedStyle && selectedColorConfig && (selectedColorConfig !== "Select" || selectedBaseColor);
+
+
+
+
+
+
   const handleImpressMe = async () => {
     if (!allOptionsSelected) {
-      alert("Please complete all selections before generating.");
+      Alert.alert("Please complete all selections before generating.");
       return;
     }
     setLoading(true);
     try {
-      let prompt = `A detailed closeup Nail design with ${selectedLength} length, ${selectedShape} shape, ${selectedStyle} style,`;
-      if (selectedColorConfig === "Select" && selectedBaseColor) {
-        prompt += ` and a base color of ${selectedBaseColor} with a ${selectedColorConfig} color configuration.`;
-      } else {
-        prompt += ` and ${selectedColorConfig} color configuration.`;
-      }
+      // 1. Gather all the current state variables into a single object.
+      // This is the object that will be sent to the backend.
+      const designOptions = {
+        length: selectedLength,
+        shape: selectedShape,
+        style: selectedStyle,
+        color: selectedColorConfig, // Backend expects 'color' for the config
+        baseColor: selectedBaseColor,
+      };
 
-      const result = await generateDesigns({ prompt, model: "stabilityai/sdxl-turbo:free" });
+      console.log("Sending these raw options for each model:", designOptions);
 
-      setLoading(false);
-      navigation.navigate('Results', { 
-        generatedImages: result.imageUrls, 
-        length: selectedLength, 
-        shape: selectedShape, 
-        style: selectedStyle, 
-        colorConfig: selectedColorConfig, 
-        baseColor: selectedBaseColor 
+      // 2. Map over the models and create an array of API call promises.
+      const imagePromises = IMAGE_GENERATION_MODELS.map(model => {
+        const payload = {
+          ...designOptions,
+          model: model, // Add the current model to the payload
+        };
+        // This is the correct call that sends all the raw data.
+        return generateDesigns(payload).catch(error => {
+          console.error(`Error generating with model ${model}:`, error);
+          return null; // Return null for failed requests to not crash Promise.all
+        });
       });
 
-    } catch (error) {
+      // 3. Execute all promises.
+      const results = await Promise.all(imagePromises);
+
+      // 4. Process the results.
+      const imageUrls = results.filter(r => r).flatMap(result => result.imageUrls);
+
+      if (imageUrls.length === 0) {
+        throw new Error("All image generation models failed. Please try again later.");
+      }
+
+      setLoading(false);
+      navigation.navigate('Results', {
+        generatedImages: imageUrls,
+      });
+
+    } catch (error: any) {
       setLoading(false);
       console.error("Fatal error in handleImpressMe:", error);
-      alert(`Generation Failed: ${error.message}`);
+      Alert.alert("Generation Failed", error.message);
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <>

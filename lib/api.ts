@@ -1,7 +1,10 @@
+
+
 import { auth } from './firebase';
-import { User } from 'firebase/auth';
+import type { User } from 'firebase/auth';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://localhost:3000';
+console.log('Using API_BASE_URL:', API_BASE_URL);
 
 /**
  * Awaits for the Firebase auth state to be initialized and returns the current user.
@@ -10,43 +13,47 @@ const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://localhost:3
  */
 const getInitializedUser = (): Promise<User | null> => {
   return new Promise((resolve) => {
-    // If currentUser is already available, resolve immediately
     if (auth.currentUser) {
       return resolve(auth.currentUser);
     }
-    // Otherwise, wait for the auth state to change
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      unsubscribe(); // Unsubscribe to prevent memory leaks
+      unsubscribe();
       resolve(user);
     });
   });
 };
 
-async function fetchWithAuth(url: string, options?: RequestInit) {
+async function fetchWithAuth(url: string, options: RequestInit = {}) {
   const user = await getInitializedUser();
-  console.log('fetchWithAuth: Initialized user:', user ? user.uid : 'No user found');
 
   if (!user) {
-    // This case should ideally be handled by UI logic (e.g., redirect to login)
-    // But as a safeguard, we throw an error.
     throw new Error('Authentication required. No user is signed in.');
   }
 
   const token = await user.getIdToken(true); // Force a token refresh
-  console.log('Firebase Token Status:', token ? 'Token successfully retrieved' : 'Token is null');
+  const headers = new Headers(options.headers);
+  headers.set('Authorization', `Bearer ${token}`);
 
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`, // Token is now guaranteed to exist
-    ...options?.headers,
+  if (options.body && !headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
+
+  const finalOptions = {
+    ...options,
+    headers,
   };
 
-  console.log('fetchWithAuth: Headers being sent:', {
-    ...headers,
-    Authorization: 'Bearer [REDACTED]', // Avoid logging the full token
+  console.log('Final fetch options:', {
+    url: `${API_BASE_URL}${url}`,
+    method: finalOptions.method,
+    headers: {
+      Authorization: 'Bearer [REDACTED]',
+      'Content-Type': headers.get('Content-Type'),
+    },
+    body: finalOptions.body,
   });
 
-  const response = await fetch(`${API_BASE_URL}${url}`, { ...options, headers });
+  const response = await fetch(`${API_BASE_URL}${url}`, finalOptions);
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ error: 'Invalid JSON response from server' }));
@@ -54,11 +61,33 @@ async function fetchWithAuth(url: string, options?: RequestInit) {
     throw new Error(errorData.error || 'Something went wrong');
   }
 
-  return response.json();
+  const text = await response.text();
+  return text ? JSON.parse(text) : {};
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export async function generateDesigns(designOptions: {
-  prompt: string;
+  // Raw selections from the form
+  length?: string;
+  shape?: string;
+  style?: string;
+  color?: string; // This is the colorConfig from the form
+  baseColor?: string;
+
   model: string;
   width?: number;
   height?: number;
@@ -69,6 +98,7 @@ export async function generateDesigns(designOptions: {
     body: JSON.stringify(designOptions),
   });
 }
+
 
 export async function saveDesign(designData: {
   prompt: string;
