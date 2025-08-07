@@ -213,71 +213,55 @@ const DesignFormScreen = ({ navigation, route }) => {
 
 
 
-// Replace your multiple requests with a single test request
-const handleImpressMe = async () => {
-  if (!allOptionsSelected) {
-    Alert.alert("Please complete all selections before generating.");
-    return;
-  }
-  setLoading(true);
-  try {
-    const designOptions = {
-      length: selectedLength,
-      shape: selectedShape,
-      style: selectedStyle,
-      color: selectedColorConfig,
-      baseColor: selectedBaseColor,
-    };
+  const handleImpressMe = async () => {
+    if (!allOptionsSelected) {
+      Alert.alert("Please complete all selections before generating.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const designOptions = {
+        length: selectedLength,
+        shape: selectedShape,
+        style: selectedStyle,
+        color: selectedColorConfig,
+        baseColor: selectedBaseColor,
+      };
 
-    console.log("=== SINGLE REQUEST TEST ===");
-    console.log("Sending designOptions:", JSON.stringify(designOptions, null, 2));
+      console.log("Sending these raw options for each model:", designOptions);
 
-    // Test with just one model first
-    const testPayload = {
-      ...designOptions,
-      model: "stabilityai/sdxl-turbo:free",
-    };
-    
-    console.log("Final payload:", JSON.stringify(testPayload, null, 2));
-    
-    const result = await generateDesigns(testPayload);
-    console.log("Success! Result:", result);
-    
-    // If this works, then the issue is with Promise.all
-    setLoading(false);
-    // navigation.navigate('Results', { generatedImages: result.imageUrls });
+      const imagePromises = IMAGE_GENERATION_MODELS.map(model => {
+        const payload = {
+          ...designOptions,
+          model: model,
+        };
+        return generateDesigns(payload).catch(error => {
+          console.error(`Error generating with model ${model}:`, error);
+          return null; // Return null for failed requests to not crash Promise.all
+        });
+      });
 
-    navigation.navigate('Results', {
-  generatedImages: result.imageUrls, // The images you generated
-  // Also pass the raw params for the ResultsScreen to use if needed
-  length: selectedLength,
-  shape: selectedShape,
-  style: selectedStyle,
-  color: selectedColorConfig,
-  baseColor: selectedBaseColor,
-});
-  } catch (error: any) {
-    setLoading(false);
-    console.error("Single request error:", error);
-    Alert.alert("Generation Failed", error.message);
-  }
-};
+      const results = await Promise.all(imagePromises);
 
+      const imageUrls = results
+        .filter(r => r && r.imageUrls && r.imageUrls.length > 0)
+        .flatMap(result => result.imageUrls);
 
+      if (imageUrls.length === 0) {
+        throw new Error("All image generation models failed. Please try again later.");
+      }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+      navigation.navigate('Results', {
+        generatedImages: imageUrls,
+        ...designOptions,
+      });
+    } catch (error: any) {
+      console.error("Fatal error in handleImpressMe:", error);
+      Alert.alert("Generation Failed", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
