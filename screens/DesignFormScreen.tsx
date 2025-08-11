@@ -5,6 +5,8 @@ import { Colors } from '../lib/colors';
 import SelectorRow, { SelectorOption } from '../components/SelectorRow';
 import ColorPickerModal from '../components/ColorPickerModal';
 import { generateDesigns } from '../lib/api';
+import LoadingScreen from '../screens/LoadingScreen';
+
 
 // --- All your icon imports are correct ---
 import LengthShortIcon from '../assets/images/length_short.svg';
@@ -73,6 +75,25 @@ const colorConfigOptions: SelectorOption[] = [
   { value: "Balanced", icon: ColorTriadIcon },
   { value: "Rich", icon: ColorTetradicIcon },
 ];
+
+const styles = StyleSheet.create({
+  background: { flex: 1, width: '100%', height: '100%' },
+  scrollViewContainer: { padding: 20, paddingTop: 40 },
+  title: {
+    fontSize: 36,
+    fontFamily: 'PottaOne-Regular',
+    color: Colors.lightYellowCream,
+    textAlign: 'center',
+    marginBottom: 30,
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 8,
+  },
+  activeSection: { backgroundColor: Colors.lightGrayPurple, borderRadius: 10, marginBottom: 20 },
+  inactiveSection: { backgroundColor: Colors.lightDustyBroun, opacity: 0.25 },
+  spacer: { height: Dimensions.get('window').height / 2 },
+});
+
 
 
 const DesignFormScreen = ({ navigation, route }) => {
@@ -196,6 +217,9 @@ const DesignFormScreen = ({ navigation, route }) => {
       setLoading(false);
     }
   };
+    if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <>
@@ -230,22 +254,5 @@ const DesignFormScreen = ({ navigation, route }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  background: { flex: 1, width: '100%', height: '100%' },
-  scrollViewContainer: { padding: 20, paddingTop: 40 },
-  title: {
-    fontSize: 36,
-    fontFamily: 'PottaOne-Regular',
-    color: Colors.lightYellowCream,
-    textAlign: 'center',
-    marginBottom: 30,
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 8,
-  },
-  activeSection: { backgroundColor: Colors.lightGrayPurple, borderRadius: 10, marginBottom: 20 },
-  inactiveSection: { backgroundColor: Colors.lightDustyBroun, opacity: 0.25 },
-  spacer: { height: Dimensions.get('window').height / 2 },
-});
 
 export default DesignFormScreen;

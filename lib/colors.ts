@@ -19,5 +19,9 @@ export const Colors = {
   green: '#4CAF50',
   dustyBroun: '#615c62',
   lightDustyBroun: '#776979',
-  solidTeal: '#a6e4df'
+  solidTeal: '#a6e4df',
+  lightPinkPurple:'#f1d6ffff',
+  darkBlue:'#004aad',
+  darkCherry:'#5f2461',
+  greyAzure:'#9dafbf',
 };

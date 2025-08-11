@@ -125,3 +125,13 @@ export async function toggleFavorite(designId: string) {
     method: 'PATCH',
   });
 }
+
+export async function fetchRandomFunFact() {
+  // This endpoint does not require authentication
+  const response = await fetch(`${API_BASE_URL}/api/fun-facts`);
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ error: 'Invalid JSON response' }));
+    throw new Error(errorData.error || 'Failed to fetch fun fact');
+  }
+  return response.json();
+}
