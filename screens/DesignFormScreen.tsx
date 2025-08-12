@@ -198,6 +198,19 @@ const DesignFormScreen = ({ navigation, route }) => {
 
       const results = await Promise.all(imagePromises);
 
+      // Check if the rate limit was hit for any of the models
+      const limitHitResult = results.find(r => r && r.limitReached);
+
+      if (limitHitResult) {
+        Alert.alert("Daily Limit Reached", limitHitResult.message);
+        navigation.navigate('Results', {
+          generatedImages: limitHitResult.imageUrls, // Pass the placeholder URL
+          ...designOptions,
+          limitReached: true, // Pass a flag to the results screen
+        });
+        return; // Stop further processing
+      }
+
       const imageUrls = results
         .filter(r => r && r.imageUrls && r.imageUrls.length > 0)
         .flatMap(result => result.imageUrls);

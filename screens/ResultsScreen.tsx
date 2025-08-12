@@ -26,7 +26,7 @@ const IMAGE_GENERATION_MODELS = [
 
 const ResultsScreen = ({ route, navigation }) => {
   // CHANGE: Accept the new params structure
-  const { generatedImages, length, shape, style, color, baseColor } = route.params || {};
+  const { generatedImages, length, shape, style, color, baseColor, limitReached } = route.params || {};
   
   const [generatedDesigns, setGeneratedDesigns] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,6 +34,18 @@ const ResultsScreen = ({ route, navigation }) => {
   const [fullScreenImage, setFullScreenImage] = useState(null);
 
   useEffect(() => {
+    // If we have a limit reached flag, just show the placeholder
+    if (limitReached && generatedImages?.length > 0) {
+      const formattedImages = generatedImages.map((url, index) => ({
+        id: `limit-placeholder-${index}`,
+        url: url,
+        saved: false, // Should not be saveable
+      }));
+      setGeneratedDesigns(formattedImages);
+      setLoading(false);
+      return;
+    }
+
     // CHANGE: If we already have generatedImages, use them instead of generating new ones
     if (generatedImages && generatedImages.length > 0) {
       const formattedImages = generatedImages.map((url, index) => ({
@@ -53,7 +65,7 @@ const ResultsScreen = ({ route, navigation }) => {
       setError("Missing design parameters");
       setLoading(false);
     }
-  }, [generatedImages, length, shape, style, color, baseColor]);
+  }, [generatedImages, length, shape, style, color, baseColor, limitReached]);
 
   const fetchDesigns = async () => {
     try {
@@ -144,7 +156,7 @@ const ResultsScreen = ({ route, navigation }) => {
           icon={item.saved ? "check-circle" : "content-save-outline"}
           iconColor={item.saved ? Colors.green : Colors.teal}
           onPress={() => handleSaveDesign(item)}
-          disabled={item.saved}
+          disabled={item.saved || limitReached}
           size={24}
         />
         <IconButton
