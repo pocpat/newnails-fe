@@ -1,0 +1,30 @@
+{
+  "cli": {
+    "version": ">= 3.0.0"
+  },
+  "build": {
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true
+      },
+      "env": {
+        "EXPO_RUNTIME_VERSION_POLICY": "appVersion"
+      },
+      "channel": "preview"
+    },
+    "production": {
+      "distribution": "store",
+      "env": {
+        "EXPO_RUNTIME_VERSION_POLICY": "appVersion"
+      },
+      "channel": "production"
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
