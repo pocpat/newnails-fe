@@ -76,9 +76,6 @@ The app uses a simple, linear navigation flow to guide the user:
 | Welcome Screen | Design Form | Results Screen |
 
 |:--------------:|:-----------:|:--------------:|
-<<<<<<< HEAD
-| <img src="https://raw.githubusercontent.com/YOUR_USERNAME/newnails-fe/YOUR_BRANCH/assets/images/m01.png" alt="Welcome Screen" width="200"/> | <img src="https://raw.githubusercontent.com/YOUR_USERNAME/newnails-fe/YOUR_BRANCH/assets/images/m03.png" alt="Design Step" width="200"/> | <img src="https://raw.githubusercontent.com/YOUR_USERNAME/newnails-fe/YOUR_BRANCH/assets/images/m08.png" alt="Results Screen" width="200"/> |
-=======
-| <img src="assets/images/m01.png" alt="Welcome Screen" width="200"/> | <img src="assets/images/m03.png" alt="Design Step" width="200"/> | <img src="assets/images/m08.png" alt="Results Screen" width="200"/> |
 
->>>>>>> 5438da39e545e44275bd09b03fcbbf56cbe7deb4
+| <img src="https://raw.githubusercontent.com/YOUR_USERNAME/newnails-fe/YOUR_BRANCH/assets/images/m01.png" alt="Welcome Screen" width="200"/> | <img src="https://raw.githubusercontent.com/YOUR_USERNAME/newnails-fe/YOUR_BRANCH/assets/images/m03.png" alt="Design Step" width="200"/> | <img src="https://raw.githubusercontent.com/YOUR_USERNAME/newnails-fe/YOUR_BRANCH/assets/images/m08.png" alt="Results Screen" width="200"/> |
+
