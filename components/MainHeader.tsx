@@ -48,7 +48,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton = false, onT
           </Button>
         </View>
       ) : (
-        <Appbar.Content title="Dipsy" titleStyle={styles.title} />
+        <Appbar.Content title="DiPSY" titleStyle={styles.title} />
       )}
 
       <Menu

@@ -32,11 +32,10 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 // This is the new component that holds all the navigation logic.
 // Because it's a child of AuthProvider, it can safely use the useAuth hook.
 const AppNavigator = () => {
-  const { loading } = useAuth();
+  const { user, loading } = useAuth();
 
-  // We can show a splash screen here while the auth state is loading
   if (loading) {
-    return null;
+    return null; // Or a splash screen
   }
 
   return (
@@ -54,6 +53,7 @@ const AppNavigator = () => {
         })}
       >
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="DesignForm" component={DesignFormScreen} />
         <Stack.Screen name="Results" component={ResultsScreen} />
         <Stack.Screen
@@ -69,7 +69,6 @@ const AppNavigator = () => {
             ),
           })}
         />
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
       <Footer />
     </NavigationContainer>

@@ -21,7 +21,7 @@ const LoginScreen = ({ navigation }) => {
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
       }
-      // Navigation will be handled by the onAuthStateChanged listener in AuthProvider
+      navigation.navigate('Welcome');
     } catch (error: any) {
       Alert.alert('Authentication Error', error.message);
     }
