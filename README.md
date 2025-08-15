@@ -65,7 +65,7 @@ The app uses a simple, linear navigation flow to guide the user:
         ```
 4.  **Run the application:**
     ```bash
-    npx expo start
+    npx expo start --tunnel
     ```
     Scan the QR code with the Expo Go app on your iOS or Android device.
 
@@ -73,10 +73,10 @@ The app uses a simple, linear navigation flow to guide the user:
 
 ### 🖼️ Screenshots
 
-*(Placeholders for screenshots of the app's UI)*
+
 
 | Welcome Screen | Design Form | Results Screen |
 | :------------: | :---------: | :------------: |
 | `[----------]` | `[-------]` | `[----------]` |
-| `[   IMG    ]` | `[  IMG  ]` | `[   IMG    ]` |
+| <img src="assets/images/m01.png" alt="Welcome Screen" width="200"/> | <img src="assets/images/m03.png" alt="Design Step" width="200"/> | <img src="assets/images/m08.png" alt="Results Screen" width="200"/>  | `[   IMG    ]` |
 | `[----------]` | `[-------]` | `[----------]` |
