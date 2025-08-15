@@ -76,5 +76,6 @@ The app uses a simple, linear navigation flow to guide the user:
 | Welcome Screen | Design Form | Results Screen |
 
 |:--------------:|:-----------:|:--------------:|
+
 | <img src="assets/m01.png" alt="Welcome Screen" width="50"/> | <img src="assets/m03.png" alt="Design Step" width="50"/> | <img src="assets/m08.png" alt="Results Screen" width="50"/> |
 
