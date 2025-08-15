@@ -77,7 +77,7 @@ const SelectorRow = React.memo(React.forwardRef<View, SelectorRowProps>(({ title
                     {typeof Icon === 'number' ? (
                       <Image source={Icon} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
                     ) : (
-                      <Icon width="100%" height="100%" opacity={!isActive ? 0.3 : (title === "Color Palette" && value !== "Select" && !isBaseColorSelected ? 0.3 : 1)} />
+                      (Icon as React.FC<SvgProps>)({ width: "100%", height: "100%", opacity: !isActive ? 0.3 : (title === "Color Palette" && value !== "Select" && !isBaseColorSelected ? 0.3 : 1) })
                     )}
                   </View>
                   <Text style={[styles.optionText, { color: optionTextColor }]}>
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontFamily: 'Inter-Bold',
-    color: Colors.lightGrayPurple,
+    color: Colors.dustyBroun,
     marginBottom: 10,
   },
   optionsContainer: {
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
   },
   option: {
     backgroundColor: 'rgba(119, 105, 121, 1)',
+
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 20,
@@ -144,12 +145,12 @@ const styles = StyleSheet.create({
     borderColor: Colors.lightPink,
   },
   optionText: {
-    color: '#6d435a',
+    color: Colors.black,
     fontFamily: 'Inter-Variable',
     fontSize: 8,
   },
   selectedOptionText: {
-    color: '#2EC4B6',
+    color: Colors.teal,
     fontFamily: 'Inter-Bold',
   },
   lengthOption: {

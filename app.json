@@ -1,8 +1,11 @@
 {
   "expo": {
-    "name": "newnails-fe",
+    "name": "DiPSY",
     "slug": "newnails-fe",
     "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,19 +15,30 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "updates": {
+      "url": "https://u.expo.dev/2c5500e7-746c-45fb-bcb5-d8c403b6dc10",
+      "enabled": true,
+      "fallbackToCacheTimeout": 0
+    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dipsy.app"
     },
     "android": {
+      "package": "com.dipsy.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-         
       },
       "edgeToEdgeEnabled": true
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/nIcon4.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2c5500e7-746c-45fb-bcb5-d8c403b6dc10"
+      }
     }
   }
 }

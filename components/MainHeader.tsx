@@ -38,7 +38,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton = false, onT
 
     <Appbar.Header style={styles.header}>
       <Appbar.Action
-        icon={() => <SvgXml xml={logoXml} width="24" height="24" fill={Colors.darkPinkPurple} />}
+        icon={() => <SvgXml xml={logoXml} width="24" height="24" fill={Colors.solidTeal} />}
         onPress={openMenu}
       />
       {showTryAgainButton ? (
@@ -48,33 +48,34 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton = false, onT
           </Button>
         </View>
       ) : (
-        <Appbar.Content title="Tipsy" titleStyle={styles.title} />
+        <Appbar.Content title="DiPSY" titleStyle={styles.title} />
       )}
 
       <Menu
         visible={visible}
         onDismiss={closeMenu}
-        anchor={<Appbar.Action icon="dots-vertical" color={Colors.darkPinkPurple} onPress={openMenu} />}
+        anchor={<Appbar.Action icon="dots-vertical" color={Colors.solidTeal} onPress={openMenu} />}
+        contentStyle={{ backgroundColor: Colors.greyAzure }}
       >
         {user ? (
           <>
             <Menu.Item
               onPress={() => { navigation.navigate('MyDesigns'); closeMenu(); }}
-              title="My Designs"
-              titleStyle={styles.menuItem}
+              title="My Library"
+              titleStyle={{ color: Colors.darkPinkPurple }}
             />
             <Menu.Item
               onPress={() => { navigation.navigate('DesignForm', { clear: true }); closeMenu(); }}
               title="Start Over"
-              titleStyle={styles.menuItem}
+              titleStyle={{ color: Colors.darkPinkPurple }}
             />
-            <Menu.Item onPress={handleLogout} title="Logout" titleStyle={styles.menuItem} />
+            <Menu.Item onPress={handleLogout} title="Logout" titleStyle={{ color: Colors.darkPinkPurple }} />
           </>
         ) : (
           <Menu.Item
             onPress={() => { navigation.navigate('Login'); closeMenu(); }}
             title="Login"
-            titleStyle={styles.menuItem}
+            titleStyle={{ color: Colors.darkPinkPurple }}
           />
         )}
       </Menu>
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    color: Colors.lightPurple,
+    color: Colors.solidTeal,
     fontFamily: 'PottaOne-Regular',
     fontSize: 24,
     textAlign: 'center',
@@ -106,14 +107,10 @@ const styles = StyleSheet.create({
     fontSize: 12, // Smaller font size for the button label
   },
   tryAgainButton: {
-    backgroundColor: Colors.teal,
+    backgroundColor: Colors.solidTeal,
     borderRadius: 20,
     paddingHorizontal: 10, // Reduced horizontal padding
     paddingVertical: 3, // Reduced vertical padding
-  },
-  menuItem: {
-    fontFamily: 'Inter-Variable',
-    color: 'rgba(0, 0, 0, 0.3)',
   },
 });
 

@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 const Footer = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>© 2025 Tipsy | All Rights Reserved</Text>
+      <Text style={styles.text}>© 2025 DiPSY | All Rights Reserved</Text>
     </View>
   );
 };

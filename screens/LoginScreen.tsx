@@ -21,7 +21,7 @@ const LoginScreen = ({ navigation }) => {
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
       }
-      // Navigation will be handled by the onAuthStateChanged listener in AuthProvider
+      navigation.navigate('Welcome');
     } catch (error: any) {
       Alert.alert('Authentication Error', error.message);
     }
@@ -33,7 +33,7 @@ const LoginScreen = ({ navigation }) => {
       style={styles.background}
     >
         <View style={styles.container}>
-          <Text style={styles.title}>{isLogin ? 'Welcome Back' : 'Join Tipsy'}</Text>
+          <Text style={styles.title}>{isLogin ? 'Welcome Back' : 'Join Dipsy'}</Text>
           <TextInput
             label="Email"
             value={email}

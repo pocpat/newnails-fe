@@ -13,8 +13,8 @@ const WelcomeScreen = ({ navigation }) => {
       style={styles.background}
     >
       <View style={styles.container}>
-        <Text style={styles.title}>TiPSY</Text>
-        <Text style={styles.subtitle}>Your AI assistant</Text>
+        <Text style={styles.title}>DiPSY</Text>
+        <Text style={styles.subtitle}>Create unique designs</Text>
         <Image source={require('../assets/images/hero-img.png')} style={styles.heroImage} />
         {user ? (
           <Button
@@ -59,6 +59,9 @@ const styles = StyleSheet.create({
     fontFamily: 'PottaOne-Regular',
     color: Colors.lightYellowCream,
     textAlign: 'center',
+        textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 8
   },
   subtitle: {
     fontSize: 18,

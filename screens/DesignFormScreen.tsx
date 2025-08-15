@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Text, ScrollView, ImageBackground, Dimensions } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, ImageBackground, Dimensions,Alert } from 'react-native';
 import ThreeDButton from '../components/ThreeDButton';
 import { Colors } from '../lib/colors';
 import SelectorRow, { SelectorOption } from '../components/SelectorRow';
 import ColorPickerModal from '../components/ColorPickerModal';
 import { generateDesigns } from '../lib/api';
+import LoadingScreen from '../screens/LoadingScreen';
+
 
 // --- All your icon imports are correct ---
 import LengthShortIcon from '../assets/images/length_short.svg';
@@ -30,6 +32,15 @@ import ColorAnalogousIcon from '../assets/images/color_analog.svg';
 import ColorComplimentaryIcon from '../assets/images/color_complim.svg';
 import ColorTriadIcon from '../assets/images/color_triad.svg';
 import ColorTetradicIcon from '../assets/images/color_tetra.svg';
+
+
+const IMAGE_GENERATION_MODELS = [
+  "stabilityai/sdxl-turbo:free",
+  "google/gemini-2.0-flash-exp:free",
+  "black-forest-labs/FLUX-1-schnell:free",
+  "HiDream-ai/HiDream-I1-Full:free",
+];
+
 
 
 // --- All your options arrays are correct ---
@@ -60,10 +71,29 @@ const colorConfigOptions: SelectorOption[] = [
   { value: "Select", icon: ColorBaseIcon },
   { value: "Mono", icon: ColorMonochromaticIcon },
   { value: "Analog", icon: ColorAnalogousIcon },
-  { value: "Complim", icon: ColorComplimentaryIcon },
-  { value: "Triad", icon: ColorTriadIcon },
-  { value: "Tetradic", icon: ColorTetradicIcon },
+  { value: "Contrast", icon: ColorComplimentaryIcon },
+  { value: "Balanced", icon: ColorTriadIcon },
+  { value: "Rich", icon: ColorTetradicIcon },
 ];
+
+const styles = StyleSheet.create({
+  background: { flex: 1, width: '100%', height: '100%' },
+  scrollViewContainer: { padding: 20, paddingTop: 40 },
+  title: {
+    fontSize: 36,
+    fontFamily: 'PottaOne-Regular',
+    color: Colors.lightYellowCream,
+    textAlign: 'center',
+    marginBottom: 30,
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 8,
+  },
+  activeSection: { backgroundColor: Colors.lightGrayPurple, borderRadius: 10, marginBottom: 20 },
+  inactiveSection: { backgroundColor: Colors.lightDustyBroun, opacity: 0.25 },
+  spacer: { height: Dimensions.get('window').height / 2 },
+});
+
 
 
 const DesignFormScreen = ({ navigation, route }) => {
@@ -101,7 +131,6 @@ const DesignFormScreen = ({ navigation, route }) => {
     }
   }, [route.params?.clear]);
 
-  const allOptionsSelected = selectedLength && selectedShape && selectedStyle && selectedColorConfig && (selectedColorConfig !== "Select" || selectedBaseColor);
 
   const handleColorSelect = (hex: string) => {
     setSelectedBaseColor(hex);
@@ -131,38 +160,79 @@ const DesignFormScreen = ({ navigation, route }) => {
     console.log(`handleSelect execution time: ${endTime - startTime}ms`);
   };
 
+  const allOptionsSelected = selectedLength && selectedShape && selectedStyle && selectedColorConfig && (selectedColorConfig !== "Select" || selectedBaseColor);
+
+
+
+
+
+
+
   const handleImpressMe = async () => {
     if (!allOptionsSelected) {
-      alert("Please complete all selections before generating.");
+      Alert.alert("Please complete all selections before generating.");
       return;
     }
     setLoading(true);
     try {
-      let prompt = `A detailed closeup Nail design with ${selectedLength} length, ${selectedShape} shape, ${selectedStyle} style,`;
-      if (selectedColorConfig === "Select" && selectedBaseColor) {
-        prompt += ` and a base color of ${selectedBaseColor} with a ${selectedColorConfig} color configuration.`;
-      } else {
-        prompt += ` and ${selectedColorConfig} color configuration.`;
-      }
+      const designOptions = {
+        length: selectedLength,
+        shape: selectedShape,
+        style: selectedStyle,
+        color: selectedColorConfig,
+        baseColor: selectedBaseColor,
+      };
 
-      const result = await generateDesigns({ prompt, model: "stabilityai/sdxl-turbo:free" });
+      console.log("Sending these raw options for each model:", designOptions);
 
-      setLoading(false);
-      navigation.navigate('Results', { 
-        generatedImages: result.imageUrls, 
-        length: selectedLength, 
-        shape: selectedShape, 
-        style: selectedStyle, 
-        colorConfig: selectedColorConfig, 
-        baseColor: selectedBaseColor 
+      const imagePromises = IMAGE_GENERATION_MODELS.map(model => {
+        const payload = {
+          ...designOptions,
+          model: model,
+        };
+        return generateDesigns(payload).catch(error => {
+          console.error(`Error generating with model ${model}:`, error);
+          return null; // Return null for failed requests to not crash Promise.all
+        });
       });
 
-    } catch (error) {
-      setLoading(false);
+      const results = await Promise.all(imagePromises);
+
+      // Check if the rate limit was hit for any of the models
+      const limitHitResult = results.find(r => r && r.limitReached);
+
+      if (limitHitResult) {
+        Alert.alert("Daily Limit Reached", limitHitResult.message);
+        navigation.navigate('Results', {
+          generatedImages: limitHitResult.imageUrls, // Pass the placeholder URL
+          ...designOptions,
+          limitReached: true, // Pass a flag to the results screen
+        });
+        return; // Stop further processing
+      }
+
+      const imageUrls = results
+        .filter(r => r && r.imageUrls && r.imageUrls.length > 0)
+        .flatMap(result => result.imageUrls);
+
+      if (imageUrls.length === 0) {
+        throw new Error("All image generation models failed. Please try again later.");
+      }
+
+      navigation.navigate('Results', {
+        generatedImages: imageUrls,
+        ...designOptions,
+      });
+    } catch (error: any) {
       console.error("Fatal error in handleImpressMe:", error);
-      alert(`Generation Failed: ${error.message}`);
+      Alert.alert("Generation Failed", error.message);
+    } finally {
+      setLoading(false);
     }
   };
+    if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <>
@@ -197,13 +267,5 @@ const DesignFormScreen = ({ navigation, route }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  background: { flex: 1, width: '100%', height: '100%' },
-  scrollViewContainer: { padding: 20, paddingTop: 40 },
-  title: { fontSize: 36, fontFamily: 'PottaOne-Regular', color: Colors.lightYellowCream, textAlign: 'center', marginBottom: 30 },
-  activeSection: { backgroundColor: 'rgba(97, 92, 98, 0.5)', borderRadius: 10, marginBottom: 20 },
-  inactiveSection: { backgroundColor: Colors.lightDustyBroun, opacity: 0.5 },
-  spacer: { height: Dimensions.get('window').height / 2 },
-});
 
 export default DesignFormScreen;
