@@ -55,26 +55,27 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showTryAgainButton = false, onT
         visible={visible}
         onDismiss={closeMenu}
         anchor={<Appbar.Action icon="dots-vertical" color={Colors.solidTeal} onPress={openMenu} />}
+        contentStyle={{ backgroundColor: Colors.greyAzure }}
       >
         {user ? (
           <>
             <Menu.Item
               onPress={() => { navigation.navigate('MyDesigns'); closeMenu(); }}
               title="My Library"
-              titleStyle={styles.menuItem}
+              titleStyle={{ color: Colors.darkPinkPurple }}
             />
             <Menu.Item
               onPress={() => { navigation.navigate('DesignForm', { clear: true }); closeMenu(); }}
               title="Start Over"
-              titleStyle={styles.menuItem}
+              titleStyle={{ color: Colors.darkPinkPurple }}
             />
-            <Menu.Item onPress={handleLogout} title="Logout" titleStyle={styles.menuItem} />
+            <Menu.Item onPress={handleLogout} title="Logout" titleStyle={{ color: Colors.darkPinkPurple }} />
           </>
         ) : (
           <Menu.Item
             onPress={() => { navigation.navigate('Login'); closeMenu(); }}
             title="Login"
-            titleStyle={styles.menuItem}
+            titleStyle={{ color: Colors.darkPinkPurple }}
           />
         )}
       </Menu>
@@ -110,10 +111,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 10, // Reduced horizontal padding
     paddingVertical: 3, // Reduced vertical padding
-  },
-  menuItem: {            //3-dot-menu links
-    fontFamily: 'Inter-Variable',
-    color: 'rgba(0, 0, 0, 0.4)',
   },
 });
 
