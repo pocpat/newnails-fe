@@ -73,11 +73,8 @@ The app uses a simple, linear navigation flow to guide the user:
 
 ### 🖼️ Screenshots
 
-
-
 | Welcome Screen | Design Form | Results Screen |
-| :------------: | :---------: | :------------: |
-| `[----------]` | `[-------]` | `[----------]` |
-| <img src="newnails-fe/assets/images
-/m01.jpg" alt="Welcome Screen" width="50"/> | <img src="assets/images/m03.png" alt="Design Step" width="200"/> | <img src="assets/images/m08.png" alt="Results Screen" width="200"/>  | `[   IMG    ]` |
-| `[----------]` | `[-------]` | `[----------]` |
+
+|:--------------:|:-----------:|:--------------:|
+| <img src="assets/images/m01.png" alt="Welcome Screen" width="200"/> | <img src="assets/images/m03.png" alt="Design Step" width="200"/> | <img src="assets/images/m08.png" alt="Results Screen" width="200"/> |
+
