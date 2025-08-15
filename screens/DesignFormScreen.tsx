@@ -39,6 +39,7 @@ const IMAGE_GENERATION_MODELS = [
   "google/gemini-2.0-flash-exp:free",
   "black-forest-labs/FLUX-1-schnell:free",
   "HiDream-ai/HiDream-I1-Full:free",
+  //"lodestones/Chroma:free" good images but too slow
 ];
 
 
