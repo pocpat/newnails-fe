@@ -75,8 +75,6 @@ The app uses a simple, linear navigation flow to guide the user:
 
 
 |:-----------Welcome Screen---------:|:------------Design Form-----------:|:----------Results Screen----------:|
-
-|:----------------------------------:|:----------------------------------:|:----------------------------------:|
 | <img src="https://raw.githubusercontent.com/pocpat/newnails-fe/main/assets/images/m01.jpg" alt="Welcome Screen" width="250"/> | <img src="https://raw.githubusercontent.com/pocpat/newnails-fe/main/assets/m03.jpg" alt="Design Form" width="250"/> | <img src="https://raw.githubusercontent.com/pocpat/newnails-fe/main/assets/m08.jpg" alt="Results Screen" width="250"/> |
 
 
