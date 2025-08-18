@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Bold',
     color: Colors.dustyBroun,
     marginBottom: 10,
+    paddingLeft: 15,
   },
   optionsContainer: {
     flexDirection: 'row',
