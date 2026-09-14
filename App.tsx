@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider as PaperProvider } from 'react-native-paper';
@@ -12,6 +12,7 @@ import LoginScreen from './screens/LoginScreen';
 import MainHeader from './components/MainHeader';
 import Footer from './components/Footer';
 import { AuthProvider, useAuth } from './lib/auth';
+import { getHealthyModels } from './lib/api';
 
 // Define the types for the navigation stack
 export type RootStackParamList = {
@@ -29,6 +30,15 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+// Fires the backend's model-check agent once per app open. The agent itself
+// runs at most one catalog check per day; every call is cheap (cached).
+const ModelCheckTrigger = () => {
+  useEffect(() => {
+    getHealthyModels().catch(() => {}); // fire-and-forget; fallbacks cover failure
+  }, []);
+  return null;
+};
+
 // This is the new component that holds all the navigation logic.
 // Because it's a child of AuthProvider, it can safely use the useAuth hook.
 const AppNavigator = () => {
@@ -40,6 +50,7 @@ const AppNavigator = () => {
 
   return (
     <NavigationContainer>
+      <ModelCheckTrigger />
       <Stack.Navigator
         initialRouteName="Welcome"
         screenOptions={({ route, navigation }) => ({

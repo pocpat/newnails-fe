@@ -4,7 +4,7 @@ import ThreeDButton from '../components/ThreeDButton';
 import { Colors } from '../lib/colors';
 import SelectorRow, { SelectorOption } from '../components/SelectorRow';
 import ColorPickerModal from '../components/ColorPickerModal';
-import { generateDesigns } from '../lib/api';
+import { generateDesigns, getHealthyModels } from '../lib/api';
 import LoadingScreen from '../screens/LoadingScreen';
 
 
@@ -34,13 +34,14 @@ import ColorTriadIcon from '../assets/images/color_triad.svg';
 import ColorTetradicIcon from '../assets/images/color_tetra.svg';
 
 
-const IMAGE_GENERATION_MODELS = [
+const FALLBACK_MODELS = [
   "stabilityai/sdxl-turbo:free",
-  "google/gemini-2.0-flash-exp:free",
   "black-forest-labs/FLUX-1-schnell:free",
-  "HiDream-ai/HiDream-I1-Full:free",
-  //"lodestones/Chroma:free" good images but too slow
 ];
+
+// Healthy models are fetched from the backend's model-check agent
+// (checked daily against ImageRouter's catalog); this list is the
+// fallback used only if the backend cannot be reached.
 
 
 
@@ -186,7 +187,15 @@ const DesignFormScreen = ({ navigation, route }) => {
 
       console.log("Sending these raw options for each model:", designOptions);
 
-      const imagePromises = IMAGE_GENERATION_MODELS.map(model => {
+      // Fetch the healthy free-model list from the backend's model-check
+      // agent (also triggers the daily check). Falls back if it fails.
+      const models = await getHealthyModels().catch((e) => {
+        console.error("Could not fetch healthy models, using fallback:", e);
+        return FALLBACK_MODELS;
+      });
+      console.log("Using models from model-check agent:", models);
+
+      const imagePromises = models.map((model: string) => {
         const payload = {
           ...designOptions,
           model: model,

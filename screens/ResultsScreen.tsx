@@ -17,12 +17,13 @@ import { Card, IconButton } from 'react-native-paper';
 import * as api from '../lib/api';
 import { Colors } from '../lib/colors';
 
-const IMAGE_GENERATION_MODELS = [
+const FALLBACK_MODELS = [
   'stabilityai/sdxl-turbo:free',
-  'google/gemini-2.0-flash-exp:free',
   'black-forest-labs/FLUX-1-schnell:free',
-  'HiDream-ai/HiDream-I1-Full:free',
 ];
+
+// Healthy models come from the backend's model-check agent (daily check);
+// this list is only used if the backend cannot be reached.
 
 const ResultsScreen = ({ route, navigation }) => {
   // CHANGE: Accept the new params structure
@@ -83,9 +84,17 @@ const ResultsScreen = ({ route, navigation }) => {
 
       console.log("ResultsScreen: Sending design options:", designOptions);
 
+      const models = await api
+        .getHealthyModels()
+        .catch((e) => {
+          console.error("Could not fetch healthy models, using fallback:", e);
+          return FALLBACK_MODELS;
+        });
+      console.log("Using models from model-check agent:", models);
+
       const allGeneratedImages = [];
 
-      for (const model of IMAGE_GENERATION_MODELS) {
+      for (const model of models) {
         try {
           // CHANGE: Send raw params instead of prompt
           const response = await api.generateDesigns({

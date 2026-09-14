@@ -99,6 +99,23 @@ export async function generateDesigns(designOptions: {
   });
 }
 
+/**
+ * Fetches the healthy free image-generation models from the backend's
+ * model-check agent. Public endpoint (no auth needed). Calling this also
+ * triggers the agent's daily check (at most one catalog fetch per day).
+ */
+export async function getHealthyModels(): Promise<string[]> {
+  const response = await fetch(`${API_BASE_URL}/api/models`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch healthy models (HTTP ${response.status})`);
+  }
+  const data = await response.json();
+  if (!Array.isArray(data.models) || data.models.length === 0) {
+    throw new Error('Model-check agent returned no models.');
+  }
+  return data.models;
+}
+
 
 export async function saveDesign(designData: {
   prompt: string;
